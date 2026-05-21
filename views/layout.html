@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khyathi Weaves | Handloom Sarees</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Alpine.js Interactivity System -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- FontAwesome Font Vector Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-amber-50/30 text-stone-800 font-sans pt-20">
+
+    <!-- FIXED NAVBAR - DEFINED ONCE AND INJECTED AUTOMATICALLY ACROSS ALL VIEWS -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-stone-100">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Brand Identity Container using Assets Directory Logo -->
+            <a href="/" class="flex items-center space-x-3">
+                <img src="/assets/logo.png" alt="Khyathi Weaves Logo" class="h-9 w-auto object-contain fallback-hidden" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <span class="text-2xl font-serif font-bold tracking-wider text-rose-800 hidden">KHYATHI WEAVES</span>
+            </a>
+            
+            <!-- Navigation Links -->
+            <div class="flex space-x-8 font-medium tracking-wide text-stone-600">
+                <a href="/" class="hover:text-rose-800 transition-colors">Home</a>
+                <a href="/about" class="hover:text-rose-800 transition-colors">About</a>
+                <a href="/shop" class="hover:text-rose-800 transition-colors">Shop</a>
+                <a href="/contact" class="hover:text-rose-800 transition-colors">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- AUTOMATIC INNER DATA PLACEHOLDER SLOT -->
+    <!-- VIEW_CONTENT_PLACEHOLDER -->
+
+</body>
+</html>

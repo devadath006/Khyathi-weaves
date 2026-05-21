@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khyathi Weaves | Admin Gateway</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-stone-100 flex items-center justify-center min-h-screen p-4 font-sans">
+
+    <div class="max-w-md w-full bg-white rounded-2xl border border-stone-200 shadow-xl overflow-hidden p-8"
+         x-data="{ showError: window.location.search.includes('error=invalid') }">
+        
+        <!-- Branding Identity Context header -->
+        <div class="text-center mb-8">
+            <img src="/assets/logo.png" alt="Khyathi Weaves Logo" class="h-14 mx-auto mb-3 object-contain fallback-hidden" onerror="this.style.display='none';">
+            <h2 class="text-2xl font-serif font-bold text-stone-900 tracking-wide">Management Gateway</h2>
+            <p class="text-xs text-stone-400 uppercase tracking-widest mt-1">Authorized Verification Required</p>
+        </div>
+
+        <!-- Failure notification feedback notice -->
+        <div x-show="showError" style="display: none;" class="mb-6 p-3 bg-rose-50 border border-rose-200 text-rose-800 text-sm rounded-lg flex items-center space-x-2">
+            <i class="fa-solid fa-circle-exclamation text-base"></i>
+            <span>Incorrect username or password. Please try again.</span>
+        </div>
+
+        <!-- Submission Gate -->
+        <form action="/admin/login" method="POST" class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">Username</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" name="username" required placeholder="Enter username" class="w-full pl-10 pr-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-hidden focus:border-rose-800 focus:bg-white text-sm text-stone-900 transition-all">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">Password</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" name="password" required placeholder="Enter password" class="w-full pl-10 pr-4 py-2.5 bg-stone-50 border border-stone-200 rounded-lg focus:outline-hidden focus:border-rose-800 focus:bg-white text-sm text-stone-900 transition-all">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-rose-800 hover:bg-rose-900 text-white font-medium py-3 rounded-lg text-sm tracking-wider transition-colors shadow-xs cursor-pointer mt-2 uppercase">
+                Verify Credentials
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <a href="/" class="text-xs text-stone-400 hover:text-rose-800 transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i> Return to Public Storefront</a>
+        </div>
+    </div>
+
+    <!-- Ensure Alpine is loaded for instant check evaluations -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</body>
+</html>

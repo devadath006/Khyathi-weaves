@@ -1,0 +1,89 @@
+<section class="max-w-7xl mx-auto px-6 py-12" x-data="{ modalOpen: false, products: [], currentProduct: null, detailedImages: [], activeGalleryImage: '' }" x-init="fetch('/api/products').then(res=>res.json()).then(data=>products=data)">
+    <h2 class="text-3xl font-serif font-bold text-stone-900 mb-2 text-center">Exquisite Collection</h2>
+    <p class="text-stone-500 text-center italic mb-12 text-sm">Select a piece to view historical weaving patterns and inspect detailing</p>
+
+    <!-- Product Grid Displays Only One Core Thumbnail Image Initially -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <template x-for="item in products" :key="item.id">
+            <div class="bg-white border border-stone-100 rounded-xl overflow-hidden shadow-xs cursor-pointer group relative"
+                 @click="currentProduct = item; 
+                         fetch(`/api/products/${item.id}/images`).then(res=>res.json()).then(images=>{ 
+                             detailedImages = images; 
+                             activeGalleryImage = images[0]; 
+                             modalOpen = true; 
+                         })">
+                
+                <div class="relative aspect-[3/4] bg-stone-50 overflow-hidden">
+                    <img :src="item.primary_image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    
+                    <!-- Dynamic Sold Out Overlay Watermark -->
+                    <template x-if="item.is_sold === 1">
+                        <div class="absolute inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center">
+                            <span class="border-4 border-rose-600 text-rose-600 bg-white/95 font-serif font-bold text-2xl tracking-widest px-4 py-2 uppercase transform -rotate-12 shadow-md">SOLD</span>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="p-5 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-serif text-lg font-bold text-stone-950 group-hover:text-rose-800" x-text="item.name"></h3>
+                        <p class="text-rose-900 font-semibold mt-1" x-text="item.price"></p>
+                    </div>
+                    <span class="text-xs text-stone-400 font-medium tracking-wider uppercase group-hover:underline">View Saree →</span>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- AMAZON CLOSURE GALLERY OVERLAY MODAL -->
+    <div class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-xs" x-show="modalOpen" x-transition style="display: none;">
+        <div class="bg-white w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col md:flex-row" @click.away="modalOpen = false">
+            
+            <button class="absolute top-4 right-4 bg-stone-900 text-white w-10 h-10 rounded-full flex items-center justify-center z-50 cursor-pointer" @click="modalOpen = false">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <template x-if="currentProduct">
+                <div class="w-full flex flex-col md:flex-row max-h-[90vh] overflow-y-auto md:overflow-hidden">
+                    <!-- Left Gallery Components -->
+                    <div class="w-full md:w-3/5 bg-stone-50 p-6 flex flex-col sm:flex-row gap-4">
+                        <div class="flex sm:flex-col gap-2 order-2 sm:order-1 overflow-x-auto sm:overflow-x-visible">
+                            <template x-for="pic in detailedImages">
+                                <button @click="activeGalleryImage = pic" class="w-16 h-20 border-2 rounded-md overflow-hidden flex-shrink-0" :class="activeGalleryImage === pic ? 'border-rose-800' : 'border-stone-200'">
+                                    <img :src="pic" class="w-full h-full object-cover">
+                                </button>
+                            </template>
+                        </div>
+                        <div class="flex-1 order-1 sm:order-2 aspect-[3/4] bg-white border border-stone-200 rounded-lg overflow-hidden relative">
+                            <img :src="activeGalleryImage" class="w-full h-full object-cover">
+                            <template x-if="currentProduct.is_sold === 1">
+                                <div class="absolute inset-0 bg-black/20 backdrop-blur-xs flex items-center justify-center">
+                                    <span class="border-4 border-rose-600 text-rose-600 bg-white/95 font-serif font-bold text-4xl tracking-widest px-6 py-2 uppercase transform -rotate-12">SOLD OUT</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Right Booking Details Component -->
+                    <div class="w-full md:w-2/5 p-8 flex flex-col justify-between bg-white border-t md:border-l border-stone-100">
+                        <div>
+                            <span class="text-xs text-rose-800 font-bold uppercase tracking-widest">Khyathi Weaves Handloom</span>
+                            <h2 class="text-2xl font-serif font-bold text-stone-900 mt-2 mb-4" x-text="currentProduct.name"></h2>
+                            <div class="text-3xl font-semibold text-stone-950 mb-6" x-text="currentProduct.price"></div>
+                        </div>
+                        <div class="mt-8">
+                            <template x-if="currentProduct.is_sold === 0">
+                                <a :href="'https://wa.me/919446994852?text=' + encodeURIComponent('Hello! I would love to order the authentic handloom ' + currentProduct.name + ' listed at ' + currentProduct.price)" target="_blank" class="w-full block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-4 px-6 rounded-lg tracking-wide shadow-xs">
+                                    <i class="fa-brands fa-whatsapp text-lg mr-2"></i> Book via WhatsApp Now
+                                </a>
+                            </template>
+                            <template x-if="currentProduct.is_sold === 1">
+                                <button disabled class="w-full bg-stone-200 text-stone-400 py-4 px-6 rounded-lg font-medium cursor-not-allowed uppercase tracking-wider">Item Permanently Sold</button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</section>
