@@ -3,25 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khyathi Weaves   Sales Invoice</title>
+<title>Khyathi Weaves – Sales Invoice</title>
+
 <style>
-  body { font-family: "Georgia", serif; background:#fdfaf5; margin:0; padding:20px; }
-  .invoice-container { width:900px; margin:auto; border:2px solid #c5a44a; padding:30px; background:#fffdf8; }
-  header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #c5a44a; padding-bottom:10px; }
-  .logo img { height:80px; }
-  .contact { text-align:right; font-size:14px; color:#5a5a5a; }
-  h2 { text-align:center; color:#c5a44a; margin-top:20px; }
-  table { width:100%; border-collapse:collapse; margin-top:20px; }
-  th, td { border:1px solid #c5a44a; padding:10px; text-align:left; }
-  th { background:#e8e2d0; }
-  .totals { text-align:right; margin-top:20px; }
-  .totals p { margin:4px 0; }
-  footer { border-top:2px solid #c5a44a; margin-top:30px; padding-top:10px; text-align:center; font-style:italic; color:#5a5a5a; }
-  .brand-footer { margin-top:10px; font-size:13px; color:#2e3b2f; }
-  .download-btn, .add-btn { background:#2e3b2f; color:#fff; border:none; padding:10px 20px; margin:10px 5px; cursor:pointer; border-radius:4px; }
-  .download-btn:hover, .add-btn:hover { background:#c5a44a; color:#2e3b2f; }
-  .form-section { margin-top:20px; }
-  .form-section input { margin:5px; padding:5px; }
+
+body{
+  font-family:"Georgia", serif;
+  background:#fdfaf5;
+  margin:0;
+  padding:20px;
+}
+
+.invoice-container{
+  width:100%;
+  max-width:750px;
+  margin:auto;
+  border:2px solid #c5a44a;
+  padding:20px;
+  background:#fffdf8;
+  box-sizing:border-box;
+  overflow:hidden;
+}}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:2px solid #c5a44a;
+  padding-bottom:10px;
+}
+
+.logo img{
+  height:80px;
+}
+
+.contact{
+  text-align:right;
+  font-size:14px;
+  color:#5a5a5a;
+}
+
+h2{
+  text-align:center;
+  color:#c5a44a;
+  margin-top:20px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+th, td{
+  border:1px solid #c5a44a;
+  padding:10px;
+  text-align:left;
+}
+
+th{
+  background:#e8e2d0;
+}
+
+.totals{
+  text-align:right;
+  margin-top:20px;
+}
+
+.totals p{
+  margin:4px 0;
+}
+
+footer{
+  border-top:2px solid #c5a44a;
+  margin-top:30px;
+  padding-top:10px;
+  text-align:center;
+  font-style:italic;
+  color:#5a5a5a;
+}
+
+.download-btn,
+.add-btn{
+  background:#2e3b2f;
+  color:#fff;
+  border:none;
+  padding:10px 20px;
+  margin:10px 5px;
+  cursor:pointer;
+  border-radius:4px;
+}
+
+.download-btn:hover,
+.add-btn:hover{
+  background:#c5a44a;
+  color:#2e3b2f;
+}
+
+.form-section{
+  margin-top:20px;
+}
+
+.form-section input{
+  margin:5px;
+  padding:8px;
+}
+
+@media print{
+  body{
+    background:white;
+    padding:0;
+  }
+
+  .form-section,
+  .download-btn{
+    display:none;
+  }
+
+  .invoice-container{
+    border:none;
+    width:100%;
+  }
+}
+
 </style>
 <!-- Place inside the header container in views/admin.html next to your open billing action node -->
 <div class="flex items-center space-x-4">
@@ -33,112 +137,238 @@
     </a>
 </div>
 </head>
+
 <body>
-    
 
 <div id="invoice" class="invoice-container">
+
   <header>
+
     <div class="logo">
-      <!-- Replace logo.png with your actual logo file -->
-<!--      <img src="logo.png" alt="Khyathi Weaves Logo">  -->
-   <img src="/assets/logo.png" alt="Logo">
- </div>
+      <img src="/assets/logo.png"  alt="Logo">
+    </div>
+
     <div class="contact">
       123 Saree Street, Kayamkulam, Kerala 690502<br>
-      info@khyathiweaves.com | +91 98765 43210<br>
-      GSTIN: 32AABCK1234M1Z5
+      www.khyathiweaves.in | +91 98765 43210
     </div>
+
   </header>
 
   <h2>SALES INVOICE</h2>
 
   <table>
+
     <tr>
-      <td><strong>Invoice No:</strong> KW/2026/001</td>
-      <td><strong>Date:</strong> 21/05/2026</td>
+
+      <td>
+        <strong>Invoice No:</strong>
+        <span id="invoiceNoDisplay">KW/2026/001</span>
+      </td>
+
+      <td>
+        <strong>Date:</strong>
+        <span id="dateDisplay">21/05/2026</span>
+      </td>
+
     </tr>
+
     <tr>
-      <td><strong>Payment Mode:</strong> Online / UPI</td>
-      <td><strong>Customer:</strong> [Enter Customer Name]</td>
+
+      <td>
+        <strong>Payment Mode:</strong>
+        <span id="paymentDisplay">Online / UPI</span>
+      </td>
+
+      <td>
+        <strong>Customer:</strong>
+        <span id="customerDisplay">Customer Name</span>
+      </td>
+
     </tr>
+
   </table>
 
   <table id="items-table">
+
     <tr>
       <th>Description</th>
       <th>Qty</th>
-      <th>Unit Price (?)</th>
-      <th>Total (?)</th>
+      <th>Unit Price (₹)</th>
+      <th>Total (₹)</th>
     </tr>
-    <!-- Items will be added here dynamically -->
+
   </table>
 
   <div class="totals" id="totals">
-    <p><strong>Subtotal:</strong> ? 0</p>
-    <p><strong>GST (5%):</strong> ? 0</p>
-    <p><strong>Grand Total:</strong> ? 0</p>
+    <p><strong>Grand Total:</strong> ₹ 0.00</p>
   </div>
 
   <footer>
-     Grace in Every Thread   Tradition Woven for Generations. <br>
-     Crafted with Care. Worn with Pride. 
-    <div class="brand-footer">
-      Authentic Cotton & Silk Sarees | Lucky Colors: Green   Gold   Maroon | Prosperity   Confidence   Success
-    </div>
+    “Grace in Every Thread – Tradition Woven for Generations.”<br>
+    “Crafted with Care. Worn with Pride.”
   </footer>
+
 </div>
 
+<!-- Invoice Details -->
 <div class="form-section">
-  <h3>Add Item</h3>
-  <input type="text" id="desc" placeholder="Description">
-  <input type="number" id="qty" placeholder="Qty">
-  <input type="number" id="price" placeholder="Unit Price ?">
-  <button class="add-btn" onclick="addItem()">Add Item</button>
+
+  <h3>Invoice Details</h3>
+
+  <input type="text" id="invoiceNo" placeholder="Invoice Number">
+
+  <input type="date" id="invoiceDate">
+
+  <input type="text" id="paymentMode" placeholder="Payment Mode">
+
+  <input type="text" id="customerName" placeholder="Customer Name">
+
+  <button class="add-btn" onclick="updateInvoiceDetails()">
+    Update Invoice
+  </button>
+
 </div>
 
-<button class="download-btn" onclick="downloadPDF()">Download as PDF</button>
+<!-- Add Items -->
+<div class="form-section">
+
+  <h3>Add Item</h3>
+
+  <input type="text" id="desc" placeholder="Description">
+
+  <input type="number" id="qty" placeholder="Qty">
+
+  <input type="number" id="price" placeholder="Unit Price ₹">
+
+  <button class="add-btn" onclick="addItem()">
+    Add Item
+  </button>
+
+</div>
+
+<button class="download-btn" onclick="downloadPDF()">
+  Download as PDF
+</button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <script>
-function addItem() {
+
+function updateInvoiceDetails(){
+
+  const invoiceNo = document.getElementById('invoiceNo').value;
+  const invoiceDate = document.getElementById('invoiceDate').value;
+  const paymentMode = document.getElementById('paymentMode').value;
+  const customerName = document.getElementById('customerName').value;
+
+  if(invoiceNo){
+    document.getElementById('invoiceNoDisplay').innerText = invoiceNo;
+  }
+
+  if(invoiceDate){
+    document.getElementById('dateDisplay').innerText = invoiceDate;
+  }
+
+  if(paymentMode){
+    document.getElementById('paymentDisplay').innerText = paymentMode;
+  }
+
+  if(customerName){
+    document.getElementById('customerDisplay').innerText = customerName;
+  }
+
+}
+
+function addItem(){
+
   const desc = document.getElementById('desc').value;
   const qty = parseInt(document.getElementById('qty').value);
   const price = parseFloat(document.getElementById('price').value);
-  if(!desc || !qty || !price) return;
+
+  if(!desc || !qty || !price){
+    return;
+  }
 
   const total = qty * price;
+
   const table = document.getElementById('items-table');
+
   const row = table.insertRow(-1);
-  row.innerHTML = `<td>${desc}</td><td>${qty}</td><td>${price}</td><td>${total}</td>`;
+
+  row.innerHTML = `
+    <td>${desc}</td>
+    <td>${qty}</td>
+    <td>${price.toFixed(2)}</td>
+    <td>${total.toFixed(2)}</td>
+  `;
 
   updateTotals();
+
+  document.getElementById('desc').value = "";
+  document.getElementById('qty').value = "";
+  document.getElementById('price').value = "";
+
 }
 
-function updateTotals() {
+function updateTotals(){
+
   const table = document.getElementById('items-table');
-  let subtotal = 0;
-  for(let i=1; i<table.rows.length; i++) {
-    subtotal += parseFloat(table.rows[i].cells[3].innerText);
+
+  let grandTotal = 0;
+
+  for(let i = 1; i < table.rows.length; i++){
+
+    grandTotal += parseFloat(
+      table.rows[i].cells[3].innerText
+    );
+
   }
-  const gst = subtotal * 0.05;
-  const grand = subtotal + gst;
-  document.getElementById('totals').innerHTML =
-    `<p><strong>Subtotal:</strong> ? ${subtotal.toFixed(2)}</p>
-     <p><strong>GST (5%):</strong> ? ${gst.toFixed(2)}</p>
-     <p><strong>Grand Total:</strong> ? ${grand.toFixed(2)}</p>`;
+
+  document.getElementById('totals').innerHTML = `
+    <p><strong>Grand Total:</strong> ₹ ${grandTotal.toFixed(2)}</p>
+  `;
+
 }
 
-function downloadPDF() {
+function downloadPDF(){
+
   const element = document.getElementById('invoice');
-  const opt = {
-    margin: 0.5,
-    filename: 'Khyathi_Weaves_Invoice.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+
+  const options = {
+
+    margin:10,
+
+    filename:'Khyathi_Weaves_Invoice.pdf',
+
+    image:{
+      type:'jpeg',
+      quality:0.98
+    },
+
+   html2canvas:{
+  scale:1.5,
+  useCORS:true,
+  scrollX:0,
+  scrollY:0
+},
+
+    jsPDF:{
+      unit:'mm',
+      format:'a4',
+      orientation:'portrait'
+    }
+
   };
-  html2pdf().set(opt).from(element).save();
+
+  html2pdf()
+    .set(options)
+    .from(element)
+    .save();
+
 }
+
 </script>
+
 </body>
 </html>

@@ -7,76 +7,164 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configurable Credentials for Verification
+/**
+ * 🔒 SECURITY CREDENTIALS
+ * Change these for your production launch
+ */
 const ADMIN_USERNAME = 'admin'; 
-const ADMIN_PASSWORD = 'KhyathiWeaves2026!'; // <-- Change this password before launching!
+const ADMIN_PASSWORD = 'KhyathiWeaves2026!'; 
 
-// Connect to SQLite local database file
+// Ensure Database Directory Exists
 const dbDir = path.join(__dirname, 'data');
 if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir);
+
 const dbPath = path.join(dbDir, 'database.sqlite');
 const db = new sqlite3.Database(dbPath);
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Configure Secure Session Tracking Memory
 app.use(session({
-    secret: 'khyathi-heritage-secret-key-string',
+    secret: 'khyathi-weaves-heritage-secret',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 3600000 } // Session expires in 1 hour
+    cookie: { maxAge: 3600000 } // 1 Hour session
 }));
 
+// Serve Static Assets (Logo and Saree Images)
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Database schema configuration
+/**
+ * 🗄️ DATABASE INITIALIZATION & SEEDING
+ * Logic to ensure the shop is populated with local assets on first run.
+ */
 db.serialize(() => {
+    // Create Saree Master Table
     db.run(`CREATE TABLE IF NOT EXISTS sarees (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        price TEXT NOT NULL,
-        is_sold INTEGER DEFAULT 0,
-        primary_image TEXT NOT NULL
+        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        name TEXT, 
+        price TEXT, 
+        is_sold INTEGER DEFAULT 0, 
+        primary_image TEXT
     )`);
+    
+    // Create Saree Gallery Table
     db.run(`CREATE TABLE IF NOT EXISTS saree_images (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        saree_id INTEGER,
-        image_url TEXT NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        saree_id INTEGER, 
+        image_url TEXT, 
         FOREIGN KEY(saree_id) REFERENCES sarees(id)
     )`);
+
+    // Automatic Seeding Logic
+    db.get("SELECT COUNT(*) as count FROM sarees", [], (err, row) => {
+        if (row && row.count === 0) {
+            console.log("Empty database detected. Seeding inventory from /assets/...");
+
+            const initialInventory = [
+                {
+                    name: 'Chettinad Cotton Saree(CC1)',
+                    price: '₹18,500',
+                    is_sold: 0, // 0 = Available, 1 = SOLD OUT
+                    main: '/assets/saree1_main.jpg',
+                    gallery: ['/assets/saree1_main.jpg', '/assets/saree1_detail1.jpg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC2)',
+                    price: '₹4,500',
+                    is_sold: 0, // SETTING THIS TO 1 FOR TESTING WATERMARK
+                    main: '/assets/saree2_main.jpg',
+                    gallery: ['/assets/saree2_main.jpg', '/assets/saree2_detail1.jpg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC3)',
+                    price: '₹3,200',
+                    is_sold: 0, 
+                    main: '/assets/saree3_main.jpg',
+                    gallery: ['/assets/saree3_main.jpg', '/assets/saree3_detail1.jpg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC4)',
+                    price: '₹3,200',
+                    is_sold: 0, 
+                    main: '/assets/saree4_main.jpg',
+                    gallery: ['/assets/saree4_main.jpg', '/assets/saree4_detail1.jpg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC5)',
+                    price: '₹3,200',
+                    is_sold: 0, 
+                    main: '/assets/saree5_main.jpg',
+                    gallery: ['/assets/saree5_main.jpg', '/assets/saree5_detail1.jpg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC6)',
+                    price: '₹3,200',
+                    is_sold: 0, 
+                    main: '/assets/saree6_main.jpg',
+                    gallery: ['/assets/saree6_main.jpg', '/assets/saree6_detail1.jpg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC7)',
+                    price: '₹3,200',
+                    is_sold: 1, 
+                    main: '/assets/saree7_main.jpg',
+                    gallery: ['/assets/saree7_main.jpg', '/assets/saree7_detail1.jpg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC8)',
+                    price: '₹3,200',
+                    is_sold:1, 
+                    main: '/assets/saree8_main.jpeg',
+                    gallery: ['/assets/saree8_main.jpeg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC9)',
+                    price: '₹3,200',
+                    is_sold: 1, 
+                    main: '/assets/saree9_main.jpeg',
+                    gallery: ['/assets/saree9_main.jpeg']
+                }
+            ];
+
+            initialInventory.forEach(s => {
+                db.run(`INSERT INTO sarees (name, price, is_sold, primary_image) VALUES (?, ?, ?, ?)`, 
+                [s.name, s.price, s.is_sold, s.main], function(err) {
+                    if (err) return console.error(err.message);
+                    const sID = this.lastID;
+                    s.gallery.forEach(img => {
+                        db.run(`INSERT INTO saree_images (saree_id, image_url) VALUES (?, ?)`, [sID, img]);
+                    });
+                });
+            });
+            console.log("DATABASE STATUS: Local inventory seeded successfully.");
+        }
+    });
 });
 
-// Verification Security Middleware Layer
-function requireLogin(req, res, next) {
-    if (req.session && req.session.isAdmin) {
-        return next();
+/**
+ * 🖼️ VIEW RENDERING ENGINE
+ * Combines layout.html with specific page content.
+ */
+function render(view, res) {
+    try {
+        const layout = fs.readFileSync(path.join(__dirname, 'views', 'layout.html'), 'utf8');
+        const content = fs.readFileSync(path.join(__dirname, 'views', `${view}.html`), 'utf8');
+        res.send(layout.replace('', content));
+    } catch (error) {
+        res.status(500).send("Critical View Error: Check your 'views' folder and filenames.");
     }
-    res.redirect('/admin/login');
 }
 
-// Master Layout HTML Template Renderer
-function renderView(viewName, res) {
-    const layoutPath = path.join(__dirname, 'views', 'layout.html');
-    const viewPath = path.join(__dirname, 'views', `${viewName}.html`);
-    
-    fs.readFile(layoutPath, 'utf8', (err, layoutHtml) => {
-        if (err) return res.status(500).send("Layout configuration error");
-        fs.readFile(viewPath, 'utf8', (err, viewHtml) => {
-            if (err) return res.status(500).send("Content extraction error");
-            const combinedHtml = layoutHtml.replace('<!-- VIEW_CONTENT_PLACEHOLDER -->', viewHtml);
-            res.send(combinedHtml);
-        });
-    });
-}
+// Public Page Routes
+app.get('/', (req, res) => render('home', res));
+app.get('/about', (req, res) => render('about', res));
+app.get('/shop', (req, res) => render('shop', res));
+app.get('/contact', (req, res) => render('contact', res));
 
-// Public Facing Routes
-app.get('/', (req, res) => renderView('home', res));
-app.get('/about', (req, res) => renderView('about', res));
-app.get('/shop', (req, res) => renderView('shop', res));
-app.get('/contact', (req, res) => renderView('contact', res));
-
-// Authentication Action Gates
+/**
+ * 🔒 ADMIN GATEWAY
+ */
 app.get('/admin/login', (req, res) => {
     if (req.session.isAdmin) return res.redirect('/admin');
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
@@ -88,7 +176,6 @@ app.post('/admin/login', (req, res) => {
         req.session.isAdmin = true;
         return res.redirect('/admin');
     }
-    // Redirect back to login with an error message parameter if verification fails
     res.redirect('/admin/login?error=invalid');
 });
 
@@ -97,68 +184,64 @@ app.get('/admin/logout', (req, res) => {
     res.redirect('/admin/login');
 });
 
-// SECURED ADMIN ROUTES (Protected by requireLogin middleware)
-// SECURED ADMIN ROUTES (Protected by requireLogin middleware)
-app.get('/admin', requireLogin, (req, res) => {
-    // Prevent browser back-button caching
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-    
+app.get('/admin', (req, res) => {
+    if (!req.session.isAdmin) return res.redirect('/admin/login');
     res.sendFile(path.join(__dirname, 'views', 'admin.html'));
 });
 
-app.get('/admin/billing', requireLogin, (req, res) => {
-    // Prevent browser back-button caching
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-
+// Billing Terminal (Inline Styled)
+app.get('/admin/billing', (req, res) => {
+    if (!req.session.isAdmin) return res.redirect('/admin/login');
     res.send(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Terminal Billing System</title>
-            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        </head>
-        <body class="bg-stone-900 text-stone-100 flex items-center justify-center min-h-screen font-mono">
-            <div class="max-w-xl w-full p-8 bg-stone-950 border border-emerald-800/40 rounded-xl shadow-2xl mx-4">
-                <div class="flex justify-between items-center border-b border-stone-800 pb-4 mb-6">
-                    <div class="flex items-center space-x-3">
-                        <img src="/assets/logo.png" alt="Logo" class="h-8 object-contain">
-                        <h1 class="text-emerald-400 font-bold tracking-wider text-sm">BILLING TERMINAL</h1>
-                    </div>
-                    <a href="/admin" class="text-xs bg-stone-800 text-stone-400 px-3 py-1.5 rounded hover:bg-stone-700">Back</a>
-                </div>
+        <html><head><script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script></head>
+        <body class="bg-stone-900 text-stone-100 flex items-center justify-center h-screen font-mono">
+            <div class="p-10 bg-stone-950 border border-emerald-500/30 rounded-3xl w-full max-w-md shadow-2xl">
+                <h1 class="text-emerald-400 font-bold mb-6 tracking-widest text-center">BILLING TERMINAL</h1>
                 <div class="space-y-4">
-                    <div class="bg-stone-900 p-4 rounded border border-stone-800">
-                        <label class="block text-xs uppercase text-stone-500 font-bold mb-1">Customer Phone</label>
-                        <input type="text" placeholder="+91 XXXXX XXXXX" class="w-full bg-stone-950 border border-stone-800 rounded p-2 focus:border-emerald-600 outline-none text-white">
-                    </div>
-                    <div class="bg-stone-900 p-4 rounded border border-stone-800">
-                        <label class="block text-xs uppercase text-stone-500 font-bold mb-1">Base Amount (INR)</label>
-                        <input type="number" placeholder="0.00" class="w-full bg-stone-950 border border-stone-800 rounded p-2 focus:border-emerald-600 outline-none text-white">
-                    </div>
-                    <button onclick="alert('Receipt processed!')" class="w-full bg-emerald-600 text-stone-950 font-bold p-3 rounded tracking-widest hover:bg-emerald-500 transition-colors uppercase text-sm">Generate Invoice</button>
+                    <input type="text" placeholder="Customer Number" class="w-full bg-stone-900 border border-stone-800 p-4 rounded-xl outline-none focus:border-emerald-500">
+                    <input type="number" placeholder="Total Amount" class="w-full bg-stone-900 border border-stone-800 p-4 rounded-xl outline-none focus:border-emerald-500">
+                    <button onclick="alert('Printing Invoice...')" class="w-full bg-emerald-600 hover:bg-emerald-500 p-4 rounded-xl font-bold uppercase transition-all">Process Bill</button>
+                    <a href="/admin" class="block text-center mt-6 text-xs text-stone-500 hover:text-stone-300">Exit System</a>
                 </div>
             </div>
-        </body>
-        </html>
+        </body></html>
     `);
 });
-// Secure API Infrastructure Routes
+
+/**
+ * 🌐 API ENDPOINTS
+ */
+
+// Get all sarees
 app.get('/api/products', (req, res) => {
-    db.all("SELECT * FROM sarees", [], (err, rows) => { res.json(rows); });
-});
-app.get('/api/products/:id/images', (req, res) => {
-    db.all("SELECT image_url FROM saree_images WHERE saree_id = ?", [req.params.id], (err, rows) => { res.json(rows.map(r => r.image_url)); });
-});
-app.post('/api/products/:id/toggle-sold', requireLogin, (req, res) => {
-    db.get("SELECT is_sold FROM sarees WHERE id = ?", [req.params.id], (err, row) => {
-        const newStatus = row.is_sold === 1 ? 0 : 1;
-        db.run("UPDATE sarees SET is_sold = ? WHERE id = ?", [newStatus, req.params.id], () => { res.json({ success: true }); });
+    db.all("SELECT * FROM sarees", [], (err, rows) => {
+        res.json(rows || []);
     });
 });
 
-app.listen(PORT, () => console.log(`Secure server running at http://localhost:${PORT}`));
+// Get specific saree gallery images
+app.get('/api/products/:id/images', (req, res) => {
+    db.all("SELECT image_url FROM saree_images WHERE saree_id = ?", [req.params.id], (err, rows) => {
+        res.json(rows ? rows.map(r => r.image_url) : []);
+    });
+});
+
+// Admin: Toggle Sold Status
+app.post('/api/products/:id/toggle-sold', (req, res) => {
+    if (!req.session.isAdmin) return res.status(403).json({ success: false });
+    db.get("SELECT is_sold FROM sarees WHERE id = ?", [req.params.id], (err, row) => {
+        if (!row) return res.status(404).json({ success: false });
+        const nextStatus = row.is_sold === 1 ? 0 : 1;
+        db.run("UPDATE sarees SET is_sold = ? WHERE id = ?", [nextStatus, req.params.id], () => {
+            res.json({ success: true, newStatus: nextStatus });
+        });
+    });
+});
+
+// Start Server
+app.listen(PORT, () => {
+    console.log(`-------------------------------------------`);
+    console.log(`KHYATHI WEAVES CORE SERVER RUNNING`);
+    console.log(`URL: http://localhost:${PORT}`);
+    console.log(`-------------------------------------------`);
+});
