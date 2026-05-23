@@ -15,9 +15,9 @@ const ADMIN_USERNAME = 'admin';
 const ADMIN_PASSWORD = 'KhyathiWeaves2026!'; 
 
 // Ensure Database Directory Exists
-const dbDir = path.join(__dirname, 'data');
+// Change this in server.js
+const dbDir = process.env.RENDER_DISK_MOUNT_PATH || path.join(__dirname, 'data');
 if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir);
-
 const dbPath = path.join(dbDir, 'database.sqlite');
 const db = new sqlite3.Database(dbPath);
 
