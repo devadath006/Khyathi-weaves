@@ -144,6 +144,14 @@ db.serialize(() => {
                     main: '/assets/saree12_main.jpg',
                     gallery: ['/assets/saree12_main.jpg']
                 },
+                {
+                    name: 'Chettinad Cotton Saree(CC13)',
+                    mrp: '₹1485',
+                    price: '₹1285',
+                    is_sold: 0,
+                    main: '/assets/saree13_main.jpg',
+                    gallery: ['/assets/saree13_main.jpg']
+                },
                 // ... etc for the rest of your sarees
             ];
 
