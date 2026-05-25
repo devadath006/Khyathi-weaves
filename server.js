@@ -257,6 +257,7 @@ app.post('/api/products/:id/toggle-sold', (req, res) => {
         });
     });
 });
+app.get('/robots.txt', (req, res) => res.sendFile(path.join(__dirname, 'robots.txt')));
 
 // Start Server
 app.listen(PORT, () => {
