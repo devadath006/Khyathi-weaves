@@ -175,6 +175,45 @@ function render(view, res) {
         res.status(500).send("View Rendering Error");
     }
 }
+app.get('/robots.txt', (req, res) => {
+    res.type('text/plain');
+    res.send("User-agent: *\nAllow: /\nSitemap: https://khyathiweaves.in/sitemap.xml");
+});
+// SITEMAP ROUTE
+app.get('/sitemap.xml', (req, res) => {
+    // 1. Set the correct header so browsers/Google know it's XML
+    res.header('Content-Type', 'application/xml');
+
+    // 2. Define your pages (The "Map")
+    // Use your actual domain here
+    const baseUrl = 'https://khyathiweaves.in';
+    
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        <url>
+            <loc>${baseUrl}/</loc>
+            <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+            <priority>1.0</priority>
+        </url>
+        <url>
+            <loc>${baseUrl}/shop</loc>
+            <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+            <priority>0.9</priority>
+        </url>
+        <url>
+            <loc>${baseUrl}/about</loc>
+            <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+            <priority>0.8</priority>
+        </url>
+        <url>
+            <loc>${baseUrl}/contact</loc>
+            <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+            <priority>0.5</priority>
+        </url>
+    </urlset>`;
+
+    res.send(sitemap);
+});
 
 // Public Page Routes
 app.get('/', (req, res) => render('home', res));
@@ -257,7 +296,7 @@ app.post('/api/products/:id/toggle-sold', (req, res) => {
         });
     });
 });
-app.get('/robots.txt', (req, res) => res.sendFile(path.join(__dirname, 'robots.txt')));
+
 
 // Start Server
 app.listen(PORT, () => {
