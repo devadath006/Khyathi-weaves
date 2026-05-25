@@ -39,109 +39,126 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
  * Logic to ensure the shop is populated with local assets on first run.
  */
 db.serialize(() => {
-    // Create Saree Master Table
+    // 1. Updated Table with mrp column
     db.run(`CREATE TABLE IF NOT EXISTS sarees (
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
         name TEXT, 
+        mrp TEXT, 
         price TEXT, 
         is_sold INTEGER DEFAULT 0, 
         primary_image TEXT
     )`);
     
-    // Create Saree Gallery Table
-    db.run(`CREATE TABLE IF NOT EXISTS saree_images (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, 
-        saree_id INTEGER, 
-        image_url TEXT, 
-        FOREIGN KEY(saree_id) REFERENCES sarees(id)
-    )`);
+    db.run(`CREATE TABLE IF NOT EXISTS saree_images (id INTEGER PRIMARY KEY AUTOINCREMENT, saree_id INTEGER, image_url TEXT, FOREIGN KEY(saree_id) REFERENCES sarees(id))`);
 
-    // Automatic Seeding Logic
     db.get("SELECT COUNT(*) as count FROM sarees", [], (err, row) => {
         if (row && row.count === 0) {
-            console.log("Empty database detected. Seeding inventory from /assets/...");
-
+            // 2. Updated Inventory with MRP
             const initialInventory = [
                 {
                     name: 'Chettinad Cotton Saree(CC1)',
-                    price: '₹18,500',
-                    is_sold: 0, // 0 = Available, 1 = SOLD OUT
+                    mrp: '₹1385',
+                    price: '₹1185',
+                    is_sold: 0,
                     main: '/assets/saree1_main.jpg',
                     gallery: ['/assets/saree1_main.jpg', '/assets/saree1_detail1.jpg']
                 },
+                // Apply this pattern (adding mrp) to CC2 through CC9...
                 {
                     name: 'Chettinad Cotton Saree(CC2)',
-                    price: '₹4,500',
-                    is_sold: 0, // SETTING THIS TO 1 FOR TESTING WATERMARK
+                    mrp: '₹1385',
+                    price: '₹1185',
+                    is_sold: 1,
                     main: '/assets/saree2_main.jpg',
                     gallery: ['/assets/saree2_main.jpg', '/assets/saree2_detail1.jpg']
                 },
                 {
                     name: 'Chettinad Cotton Saree(CC3)',
-                    price: '₹3,200',
-                    is_sold: 0, 
+                    mrp: '₹1695',
+                    price: '₹1495',
+                    is_sold: 0,
                     main: '/assets/saree3_main.jpg',
                     gallery: ['/assets/saree3_main.jpg', '/assets/saree3_detail1.jpg']
                 },
                 {
                     name: 'Chettinad Cotton Saree(CC4)',
-                    price: '₹3,200',
-                    is_sold: 0, 
+                    mrp: '₹1385',
+                    price: '₹1185',
+                    is_sold: 0,
                     main: '/assets/saree4_main.jpg',
                     gallery: ['/assets/saree4_main.jpg', '/assets/saree4_detail1.jpg']
                 },
                 {
                     name: 'Chettinad Cotton Saree(CC5)',
-                    price: '₹3,200',
-                    is_sold: 0, 
+                    mrp: '₹1385',
+                    price: '₹1185',
+                    is_sold: 0,
                     main: '/assets/saree5_main.jpg',
                     gallery: ['/assets/saree5_main.jpg', '/assets/saree5_detail1.jpg']
                 },
                 {
                     name: 'Chettinad Cotton Saree(CC6)',
-                    price: '₹3,200',
-                    is_sold: 0, 
+                    mrp: '₹1385',
+                    price: '₹1185',
+                    is_sold: 0,
                     main: '/assets/saree6_main.jpg',
                     gallery: ['/assets/saree6_main.jpg', '/assets/saree6_detail1.jpg']
                 },
                 {
                     name: 'Chettinad Cotton Saree(CC7)',
-                    price: '₹3,200',
-                    is_sold: 1, 
+                    mrp: '₹1485',
+                    price: '₹1285',
+                    is_sold: 1,
                     main: '/assets/saree7_main.jpg',
                     gallery: ['/assets/saree7_main.jpg', '/assets/saree7_detail1.jpg']
                 },
                 {
-                    name: 'Chettinad Cotton Saree(CC8)',
-                    price: '₹3,200',
-                    is_sold:1, 
-                    main: '/assets/saree8_main.jpeg',
-                    gallery: ['/assets/saree8_main.jpeg']
+                    name: 'Chettinad Cotton Saree(CC9)',
+                    mrp: '₹1585',
+                    price: '₹1385',
+                    is_sold: 1,
+                    main: '/assets/saree9_main.jpg',
+                    gallery: ['/assets/saree9_main.jpg']
                 },
                 {
-                    name: 'Chettinad Cotton Saree(CC9)',
-                    price: '₹3,200',
-                    is_sold: 1, 
-                    main: '/assets/saree9_main.jpeg',
-                    gallery: ['/assets/saree9_main.jpeg']
-                }
+                    name: 'Chettinad Cotton Saree(CC10)',
+                    mrp: '₹1585',
+                    price: '₹1385',
+                    is_sold: 0,
+                    main: '/assets/saree10_main.jpg',
+                    gallery: ['/assets/saree10_main.jpg', '/assets/saree10_detail1.jpg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC11)',
+                    mrp: '₹1385',
+                    price: '₹1185',
+                    is_sold: 0,
+                    main: '/assets/saree11_main.jpg',
+                    gallery: ['/assets/saree11_main.jpg', '/assets/saree11_detail1.jpg']
+                },
+                {
+                    name: 'Chettinad Cotton Saree(CC12)',
+                    mrp: '₹1385',
+                    price: '₹1185',
+                    is_sold: 1,
+                    main: '/assets/saree12_main.jpg',
+                    gallery: ['/assets/saree12_main.jpg']
+                },
+                // ... etc for the rest of your sarees
             ];
 
             initialInventory.forEach(s => {
-                db.run(`INSERT INTO sarees (name, price, is_sold, primary_image) VALUES (?, ?, ?, ?)`, 
-                [s.name, s.price, s.is_sold, s.main], function(err) {
-                    if (err) return console.error(err.message);
+                db.run(`INSERT INTO sarees (name, mrp, price, is_sold, primary_image) VALUES (?, ?, ?, ?, ?)`, 
+                [s.name, s.mrp, s.price, s.is_sold, s.main], function(err) {
                     const sID = this.lastID;
                     s.gallery.forEach(img => {
                         db.run(`INSERT INTO saree_images (saree_id, image_url) VALUES (?, ?)`, [sID, img]);
                     });
                 });
             });
-            console.log("DATABASE STATUS: Local inventory seeded successfully.");
         }
     });
 });
-
 /**
  * 🖼️ VIEW RENDERING ENGINE
  * Combines layout.html with specific page content.
@@ -150,9 +167,12 @@ function render(view, res) {
     try {
         const layout = fs.readFileSync(path.join(__dirname, 'views', 'layout.html'), 'utf8');
         const content = fs.readFileSync(path.join(__dirname, 'views', `${view}.html`), 'utf8');
+        
+        // Ensure this string matches exactly what is in your layout.html
         res.send(layout.replace('', content));
     } catch (error) {
-        res.status(500).send("Critical View Error: Check your 'views' folder and filenames.");
+        console.error(error);
+        res.status(500).send("View Rendering Error");
     }
 }
 
