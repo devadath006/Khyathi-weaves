@@ -76,7 +76,7 @@ db.serialize(() => {
                     name: 'Chettinad Cotton Saree(CC3)',
                     mrp: '₹1695',
                     price: '₹1495',
-                    is_sold: 0,
+                    is_sold: 1,
                     main: '/assets/saree3_main.jpg',
                     gallery: ['/assets/saree3_main.jpg', '/assets/saree3_detail1.jpg']
                 },
@@ -148,10 +148,83 @@ db.serialize(() => {
                     name: 'Chettinad Cotton Saree(CC13)',
                     mrp: '₹1485',
                     price: '₹1285',
-                    is_sold: 0,
+                    is_sold: 1,
                     main: '/assets/saree13_main.jpg',
                     gallery: ['/assets/saree13_main.jpg']
                 },
+                {
+                    name: 'Kanchi Cotton Saree(KC1)',
+                    mrp: '₹1750',
+                    price: '₹1550',
+                    is_sold: 1,
+                    main: '/assets/KC1-2.jpg',
+                    gallery: ['/assets/KC1-2.jpg','/assets/KC1-1.jpg']
+                },
+                 {
+                    name: 'Kanchi Cotton Saree(KC2)',
+                    mrp: '₹1750',
+                    price: '₹1550',
+                    is_sold: 1,
+                    main: '/assets/KC2-1.jpg',
+                    gallery: ['/assets/KC2-1.jpg','/assets/KC2-2.jpg']
+                },
+                 {
+                    name: 'Kanchi Cotton Saree(KC3)',
+                    mrp: '₹1250',
+                    price: '₹1050',
+                    is_sold: 1,
+                    main: '/assets/KC3-1.jpg',
+                    gallery: ['/assets/KC3-1.jpg','/assets/KC3-2.jpg']
+                },
+                 {
+                    name: 'Kanchi Cotton Saree(KC4)',
+                    mrp: '₹1600',
+                    price: '₹1300',
+                    is_sold: 1,
+                    main: '/assets/KC4-1.jpg',
+                    gallery: ['/assets/KC4-1.jpg','/assets/KC4-2.jpg']
+                },
+                 {
+                    name: 'Kanchi Cotton Saree(KC5)',
+                    mrp: '₹1750',
+                    price: '₹1550',
+                    is_sold: 0,
+                    main: '/assets/KC5-1.jpg',
+                    gallery: ['/assets/KC5-1.jpg','/assets/KC5-2.jpg']
+                },
+                 {
+                    name: 'Kanchi Cotton Saree(KC6)',
+                    mrp: '₹1500',
+                    price: '₹1350',
+                    is_sold: 0,
+                    main: '/assets/KC6-1.jpg',
+                    gallery: ['/assets/KC6-1.jpg','/assets/KC6-2.jpg']
+                },
+                 {
+                    name: 'Kanchi Cotton Saree(KC7)',
+                    mrp: '₹1600',
+                    price: '₹1300',
+                    is_sold: 0,
+                    main: '/assets/KC7-1.jpg',
+                    gallery: ['/assets/KC7-1.jpg','/assets/KC7-2.jpg']
+                },
+                 {
+                    name: 'Kanchi Cotton Saree(KC8)',
+                    mrp: '₹1750',
+                    price: '₹1550',
+                    is_sold: 0,
+                    main: '/assets/KC8-1.jpg',
+                    gallery: ['/assets/KC8-1.jpg','/assets/KC8-2.jpg']
+                },
+                 {
+                    name: 'Kanchi Cotton Saree(KC9)',
+                    mrp: '₹1600',
+                    price: '₹1300',
+                    is_sold: 0,
+                    main: '/assets/KC9-1.jpg',
+                    gallery: ['/assets/KC9-1.jpg','/assets/KC9-2.jpg']
+                },
+
                 // ... etc for the rest of your sarees
             ];
 
