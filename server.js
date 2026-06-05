@@ -124,7 +124,7 @@ db.serialize(() => {
                     name: 'Chettinad Cotton Saree(CC10)',
                     mrp: '₹1585',
                     price: '₹1385',
-                    is_sold: 0,
+                    is_sold: 1,
                     main: '/assets/saree10_main.jpg',
                     gallery: ['/assets/saree10_main.jpg', '/assets/saree10_detail1.jpg']
                 },
