@@ -421,15 +421,21 @@ db.serialize(() => {
                 },
                 {
                     title: 'Lauching Khyathi Weaves Website',
-                    description: 'Jameela M Devan Lauching Khyathi Weaves Website',
+                    description: 'Jameela M Devan Launching Khyathi Weaves Website',
                     media_url: '/assets/i1.jpg',
-                    category: 'inaugration'
+                    category: 'inauguration'
                 },
                 {
                     title: 'First Purchase',
                     description: 'First purchase of khyathi weaves',
                     media_url: '/assets/i2.jpg',
-                    category: 'inaugration'
+                    category: 'inauguration'
+                },
+                {
+                    title: 'Gift to Amma',
+                    description: 'My Personal Gift to Amma',
+                    media_url: '/assets/i3.jpg',
+                    category: 'inauguration'
                 }
             ];
 
