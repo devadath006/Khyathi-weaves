@@ -377,6 +377,105 @@ app.post('/api/products/:id/toggle-sold', (req, res) => {
         });
     });
 });
+// ... (Your existing middleware and setup code) ...
+
+/**
+ * 🗄️ DATABASE INITIALIZATION & SEEDING
+ */
+db.serialize(() => {
+    // 1. Existing sarees tables
+    db.run(`CREATE TABLE IF NOT EXISTS sarees (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        name TEXT, 
+        mrp TEXT, 
+        price TEXT, 
+        is_sold INTEGER DEFAULT 0, 
+        primary_image TEXT
+    )`);
+    
+    db.run(`CREATE TABLE IF NOT EXISTS saree_images (id INTEGER PRIMARY KEY AUTOINCREMENT, saree_id INTEGER, image_url TEXT, FOREIGN KEY(saree_id) REFERENCES sarees(id))`);
+
+    // NEW: 2. Create Gallery Table
+    db.run(`CREATE TABLE IF NOT EXISTS gallery_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        description TEXT,
+        media_url TEXT,
+        category TEXT
+    )`);
+
+    // Existing Sarees Seeding block...
+    db.get("SELECT COUNT(*) as count FROM sarees", [], (err, row) => {
+        // ... (Your existing initialInventory loop) ...
+    });
+
+    // NEW: 3. Seed Gallery Data if empty
+    db.get("SELECT COUNT(*) as count FROM gallery_items", [], (err, row) => {
+        if (row && row.count === 0) {
+            const initialGallery = [
+                {
+                    title: 'Natarajan',
+                    description: '',
+                    media_url: '/assets/i0.jpg',
+                    category: 'inaugration'
+                },
+                {
+                    title: 'Lauching Khyathi Weaves Website',
+                    description: 'Jameela M Devan Lauching Khyathi Weaves Website',
+                    media_url: '/assets/i1.jpg',
+                    category: 'inaugration'
+                },
+                {
+                    title: 'First Purchase',
+                    description: 'First purchase of khyathi weaves',
+                    media_url: '/assets/i2.jpg',
+                    category: 'inaugration'
+                }
+            ];
+
+            const stmt = db.prepare(`INSERT INTO gallery_items (title, description, media_url, category) VALUES (?, ?, ?, ?)`);
+            initialGallery.forEach(item => {
+                stmt.run(item.title, item.description, item.media_url, item.category);
+            });
+            stmt.finalize();
+        }
+    });
+});
+
+// ... (Your layout render function) ...
+function render(view, res) {
+    try {
+        const layout = fs.readFileSync(path.join(__dirname, 'views', 'layout.html'), 'utf8');
+        const content = fs.readFileSync(path.join(__dirname, 'views', `${view}.html`), 'utf8');
+        
+        // Matches your custom layout file's design
+        res.send(layout.replace('', content));
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("View Rendering Error");
+    }
+}
+
+// Public Page Routes
+app.get('/', (req, res) => render('home', res));
+app.get('/about', (req, res) => render('about', res));
+app.get('/shop', (req, res) => render('shop', res));
+app.get('/contact', (req, res) => render('contact', res));
+// NEW: Public Gallery Route
+app.get('/gallery', (req, res) => render('gallery', res));
+
+
+/**
+ * 🌐 API ENDPOINTS
+ */
+// ... (Your existing products endpoints) ...
+
+// NEW: Get all gallery items
+app.get('/api/gallery', (req, res) => {
+    db.all("SELECT * FROM gallery_items ORDER BY id DESC", [], (err, rows) => {
+        res.json(rows || []);
+    });
+});
 
 
 // Start Server
