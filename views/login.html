@@ -12,20 +12,20 @@
     <div class="max-w-md w-full bg-white rounded-2xl border border-stone-200 shadow-xl overflow-hidden p-8"
          x-data="{ showError: window.location.search.includes('error=invalid') }">
         
-        <!-- Branding Identity Context header -->
+      
         <div class="text-center mb-8">
             <img src="/assets/logo.png" alt="Khyathi Weaves Logo" class="h-14 mx-auto mb-3 object-contain fallback-hidden" onerror="this.style.display='none';">
             <h2 class="text-2xl font-serif font-bold text-stone-900 tracking-wide">Management Gateway</h2>
             <p class="text-xs text-stone-400 uppercase tracking-widest mt-1">Authorized Verification Required</p>
         </div>
 
-        <!-- Failure notification feedback notice -->
+    
         <div x-show="showError" style="display: none;" class="mb-6 p-3 bg-rose-50 border border-rose-200 text-rose-800 text-sm rounded-lg flex items-center space-x-2">
             <i class="fa-solid fa-circle-exclamation text-base"></i>
             <span>Incorrect username or password. Please try again.</span>
         </div>
 
-        <!-- Submission Gate -->
+       
         <form action="/admin/login" method="POST" class="space-y-5">
             <div>
                 <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">Username</label>
@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <!-- Ensure Alpine is loaded for instant check evaluations -->
+   
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>

@@ -7,39 +7,32 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-/**
- * 🔒 SECURITY CREDENTIALS
- * Change these for your production launch
- */
+
 const ADMIN_USERNAME = 'admin'; 
 const ADMIN_PASSWORD = 'KhyathiWeaves2026!'; 
 
-// Ensure Database Directory Exists
-// Change this in server.js
+
 const dbDir = process.env.RENDER_DISK_MOUNT_PATH || path.join(__dirname, 'data');
 if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir);
 const dbPath = path.join(dbDir, 'database.sqlite');
 const db = new sqlite3.Database(dbPath);
 
-// Middleware
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: 'khyathi-weaves-heritage-secret',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 3600000 } // 1 Hour session
+    cookie: { maxAge: 3600000 } 
 }));
 
-// Serve Static Assets (Logo and Saree Images)
+
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-/**
- * 🗄️ DATABASE INITIALIZATION & SEEDING
- * Logic to ensure the shop is populated with local assets on first run.
- */
+
 db.serialize(() => {
-    // 1. Updated Table with mrp column
+    
     db.run(`CREATE TABLE IF NOT EXISTS sarees (
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
         name TEXT, 
@@ -53,7 +46,7 @@ db.serialize(() => {
 
     db.get("SELECT COUNT(*) as count FROM sarees", [], (err, row) => {
         if (row && row.count === 0) {
-            // 2. Updated Inventory with MRP
+            
             const initialInventory = [
                 
                 {
@@ -172,7 +165,6 @@ db.serialize(() => {
                     gallery: ['/assets/KC9-1.jpg','/assets/KC9-2.jpg']
                 },
 
-                // ... etc for the rest of your sarees
             ];
 
             initialInventory.forEach(s => {
@@ -187,16 +179,12 @@ db.serialize(() => {
         }
     });
 });
-/**
- * 🖼️ VIEW RENDERING ENGINE
- * Combines layout.html with specific page content.
- */
+
 function render(view, res) {
     try {
         const layout = fs.readFileSync(path.join(__dirname, 'views', 'layout.html'), 'utf8');
         const content = fs.readFileSync(path.join(__dirname, 'views', `${view}.html`), 'utf8');
         
-        // Ensure this string matches exactly what is in your layout.html
         res.send(layout.replace('', content));
     } catch (error) {
         console.error(error);
@@ -207,13 +195,12 @@ app.get('/robots.txt', (req, res) => {
     res.type('text/plain');
     res.send("User-agent: *\nAllow: /\nSitemap: https://khyathiweaves.in/sitemap.xml");
 });
-// SITEMAP ROUTE
+
 app.get('/sitemap.xml', (req, res) => {
-    // 1. Set the correct header so browsers/Google know it's XML
+   
     res.header('Content-Type', 'application/xml');
 
-    // 2. Define your pages (The "Map")
-    // Use your actual domain here
+   
     const baseUrl = 'https://khyathiweaves.in';
     
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -243,15 +230,13 @@ app.get('/sitemap.xml', (req, res) => {
     res.send(sitemap);
 });
 
-// Public Page Routes
+
 app.get('/', (req, res) => render('home', res));
 app.get('/about', (req, res) => render('about', res));
 app.get('/shop', (req, res) => render('shop', res));
 app.get('/contact', (req, res) => render('contact', res));
 
-/**
- * 🔒 ADMIN GATEWAY
- */
+
 app.get('/admin/login', (req, res) => {
     if (req.session.isAdmin) return res.redirect('/admin');
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
@@ -276,7 +261,7 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'admin.html'));
 });
 
-// Billing Terminal (Inline Styled)
+
 app.get('/admin/billing', (req, res) => {
     if (!req.session.isAdmin) return res.redirect('/admin/login');
     res.send(`
@@ -295,25 +280,21 @@ app.get('/admin/billing', (req, res) => {
     `);
 });
 
-/**
- * 🌐 API ENDPOINTS
- */
 
-// Get all sarees
 app.get('/api/products', (req, res) => {
     db.all("SELECT * FROM sarees", [], (err, rows) => {
         res.json(rows || []);
     });
 });
 
-// Get specific saree gallery images
+
 app.get('/api/products/:id/images', (req, res) => {
     db.all("SELECT image_url FROM saree_images WHERE saree_id = ?", [req.params.id], (err, rows) => {
         res.json(rows ? rows.map(r => r.image_url) : []);
     });
 });
 
-// Admin: Toggle Sold Status
+
 app.post('/api/products/:id/toggle-sold', (req, res) => {
     if (!req.session.isAdmin) return res.status(403).json({ success: false });
     db.get("SELECT is_sold FROM sarees WHERE id = ?", [req.params.id], (err, row) => {
@@ -324,13 +305,9 @@ app.post('/api/products/:id/toggle-sold', (req, res) => {
         });
     });
 });
-// ... (Your existing middleware and setup code) ...
 
-/**
- * 🗄️ DATABASE INITIALIZATION & SEEDING
- */
 db.serialize(() => {
-    // 1. Existing sarees tables
+    
     db.run(`CREATE TABLE IF NOT EXISTS sarees (
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
         name TEXT, 
@@ -342,7 +319,7 @@ db.serialize(() => {
     
     db.run(`CREATE TABLE IF NOT EXISTS saree_images (id INTEGER PRIMARY KEY AUTOINCREMENT, saree_id INTEGER, image_url TEXT, FOREIGN KEY(saree_id) REFERENCES sarees(id))`);
 
-    // NEW: 2. Create Gallery Table
+    
     db.run(`CREATE TABLE IF NOT EXISTS gallery_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
@@ -351,12 +328,12 @@ db.serialize(() => {
         category TEXT
     )`);
 
-    // Existing Sarees Seeding block...
+   
     db.get("SELECT COUNT(*) as count FROM sarees", [], (err, row) => {
-        // ... (Your existing initialInventory loop) ...
+        
     });
 
-    // NEW: 3. Seed Gallery Data if empty
+    
     db.get("SELECT COUNT(*) as count FROM gallery_items", [], (err, row) => {
         if (row && row.count === 0) {
             const initialGallery = [
@@ -395,13 +372,13 @@ db.serialize(() => {
     });
 });
 
-// ... (Your layout render function) ...
+
 function render(view, res) {
     try {
         const layout = fs.readFileSync(path.join(__dirname, 'views', 'layout.html'), 'utf8');
         const content = fs.readFileSync(path.join(__dirname, 'views', `${view}.html`), 'utf8');
         
-        // Matches your custom layout file's design
+     
         res.send(layout.replace('', content));
     } catch (error) {
         console.error(error);
@@ -409,29 +386,22 @@ function render(view, res) {
     }
 }
 
-// Public Page Routes
+
 app.get('/', (req, res) => render('home', res));
 app.get('/about', (req, res) => render('about', res));
 app.get('/shop', (req, res) => render('shop', res));
 app.get('/contact', (req, res) => render('contact', res));
-// NEW: Public Gallery Route
+
 app.get('/gallery', (req, res) => render('gallery', res));
 
 
-/**
- * 🌐 API ENDPOINTS
- */
-// ... (Your existing products endpoints) ...
 
-// NEW: Get all gallery items
 app.get('/api/gallery', (req, res) => {
     db.all("SELECT * FROM gallery_items ORDER BY id DESC", [], (err, rows) => {
         res.json(rows || []);
     });
 });
 
-
-// Start Server
 app.listen(PORT, () => {
     console.log(`-------------------------------------------`);
     console.log(`KHYATHI WEAVES CORE SERVER RUNNING`);
