@@ -55,23 +55,7 @@ db.serialize(() => {
         if (row && row.count === 0) {
             // 2. Updated Inventory with MRP
             const initialInventory = [
-                {
-                    name: 'Chettinad Cotton Saree(CC1)',
-                    mrp: '₹1385',
-                    price: '₹1185',
-                    is_sold: 1,
-                    main: '/assets/saree1_main.jpg',
-                    gallery: ['/assets/saree1_main.jpg', '/assets/saree1_detail1.jpg']
-                },
-                // Apply this pattern (adding mrp) to CC2 through CC9...
-                {
-                    name: 'Chettinad Cotton Saree(CC2)',
-                    mrp: '₹1385',
-                    price: '₹1185',
-                    is_sold: 1,
-                    main: '/assets/saree2_main.jpg',
-                    gallery: ['/assets/saree2_main.jpg', '/assets/saree2_detail1.jpg']
-                },
+                
                 {
                     name: 'Chettinad Cotton Saree(CC3)',
                     mrp: '₹1695',
@@ -104,22 +88,7 @@ db.serialize(() => {
                     main: '/assets/saree6_main.jpg',
                     gallery: ['/assets/saree6_main.jpg', '/assets/saree6_detail1.jpg']
                 },
-                {
-                    name: 'Chettinad Cotton Saree(CC7)',
-                    mrp: '₹1485',
-                    price: '₹1285',
-                    is_sold: 1,
-                    main: '/assets/saree7_main.jpg',
-                    gallery: ['/assets/saree7_main.jpg', '/assets/saree7_detail1.jpg']
-                },
-                {
-                    name: 'Chettinad Cotton Saree(CC9)',
-                    mrp: '₹1585',
-                    price: '₹1385',
-                    is_sold: 1,
-                    main: '/assets/saree9_main.jpg',
-                    gallery: ['/assets/saree9_main.jpg']
-                },
+                
                 {
                     name: 'Chettinad Cotton Saree(CC10)',
                     mrp: '₹1585',
@@ -152,30 +121,8 @@ db.serialize(() => {
                     main: '/assets/saree13_main.jpg',
                     gallery: ['/assets/saree13_main.jpg']
                 },
-                {
-                    name: 'Kanchi Cotton Saree(KC1)',
-                    mrp: '₹1750',
-                    price: '₹1550',
-                    is_sold: 1,
-                    main: '/assets/KC1-2.jpg',
-                    gallery: ['/assets/KC1-2.jpg','/assets/KC1-1.jpg']
-                },
-                 {
-                    name: 'Kanchi Cotton Saree(KC2)',
-                    mrp: '₹1750',
-                    price: '₹1550',
-                    is_sold: 1,
-                    main: '/assets/KC2-1.jpg',
-                    gallery: ['/assets/KC2-1.jpg','/assets/KC2-2.jpg']
-                },
-                 {
-                    name: 'Kanchi Cotton Saree(KC3)',
-                    mrp: '₹1250',
-                    price: '₹1050',
-                    is_sold: 1,
-                    main: '/assets/KC3-1.jpg',
-                    gallery: ['/assets/KC3-1.jpg','/assets/KC3-2.jpg']
-                },
+                
+                 
                  {
                     name: 'Kanchi Cotton Saree(KC4)',
                     mrp: '₹1600',
