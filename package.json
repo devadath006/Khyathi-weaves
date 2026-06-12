@@ -4,12 +4,17 @@
   "description": "Multi-page handloom saree store application with authentication and billing routing",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "migrate": "node migrate.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
-    "pg": "^8.21.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
     "sqlite3": "^6.0.1"
   }
 }
