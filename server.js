@@ -1,19 +1,26 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env'), override: true });
 const express = require('express');
 const session = require('express-session');
 const { createClient } = require('@supabase/supabase-js');
 const multer = require('multer');
-const path = require('path');
 const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ── Supabase client (service role — full DB + Storage access) ────────────────
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
+const supabaseServiceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+
+console.log('--- SUPABASE ENV CHECK ---');
+console.log('SUPABASE_URL:', supabaseUrl);
+console.log('SUPABASE_SERVICE_ROLE_KEY length:', supabaseServiceKey.length);
+console.log('---------------------------');
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { persistSession: false }
+});
 
 const BUCKET = 'assets';
 
@@ -146,16 +153,22 @@ app.get('/api/gallery', async (req, res) => {
 
 // No auth required — bucket is already public; listing filenames is not sensitive
 app.get('/api/storage/images', async (req, res) => {
+    console.log('Fetching storage images from bucket:', BUCKET);
     const { data, error } = await supabase.storage
         .from(BUCKET)
         .list('', { limit: 500, sortBy: { column: 'name', order: 'asc' } });
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+        console.error('Storage list error:', error.message);
+        return res.status(500).json({ error: error.message });
+    }
     const images = (data || [])
         .filter(f => f.name && /\.(jpe?g|png|webp|gif)$/i.test(f.name))
         .map(f => ({
             name: f.name,
-            url: supabase.storage.from(BUCKET).getPublicUrl(f.name).data.publicUrl
+            url: supabase.storage.from(BUCKET).getPublicUrl(f.name).data.publicUrl,
+            thumbnail: supabase.storage.from(BUCKET).getPublicUrl(f.name, { transform: { width: 150, height: 150, resize: 'cover' } }).data.publicUrl
         }));
+    console.log(`Successfully retrieved ${images.length} images from storage.`);
     res.json(images);
 });
 
@@ -170,7 +183,11 @@ app.get('/admin/login', (req, res) => {
 
 app.post('/admin/login', async (req, res) => {
     const { email, password } = req.body;
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    // Create an isolated client for login verification to prevent mutating the global service-role client
+    const authClient = createClient(supabaseUrl, supabaseServiceKey, {
+        auth: { persistSession: false }
+    });
+    const { data, error } = await authClient.auth.signInWithPassword({ email, password });
     if (error || !data.session) {
         return res.redirect('/admin/login?error=invalid');
     }

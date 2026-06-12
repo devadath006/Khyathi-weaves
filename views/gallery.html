@@ -1,6 +1,6 @@
 <section class="max-w-7xl mx-auto px-6 py-12" 
-         x-data="{ gallery: [], activeFilter: 'All', lightbox: false, currentItem: null }"
-         x-init="fetch('/api/gallery').then(r=>r.json()).then(d=>gallery=d)">
+          x-data="{ gallery: [], activeFilter: 'All', lightbox: false, currentItem: null, getOptimizedUrl(url, w=400) { if(!url) return ''; return url.includes('/storage/v1/object/public/') ? url.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/') + '?width=' + w : url; } }"
+          x-init="fetch('/api/gallery').then(r=>r.json()).then(d=>gallery=d)">
     
     <div class="text-center mb-12">
         <h2 class="text-4xl font-serif font-bold text-stone-900 uppercase tracking-widest">Gallery</h2>
@@ -10,15 +10,15 @@
 
     
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <div class="columns-1 sm:columns-2 md:columns-3 gap-8 space-y-8">
         <template x-for="item in gallery" :key="item.id">
             <div x-show="activeFilter === 'All' || item.category === activeFilter"
                  x-transition:enter="transition ease-out duration-300"
                  @click="currentItem = item; lightbox = true"
-                 class="bg-white border border-stone-100 rounded-2xl overflow-hidden shadow-xs cursor-pointer hover:shadow-lg transition-all group">
+                 class="break-inside-avoid bg-white border border-stone-100 rounded-2xl overflow-hidden shadow-xs cursor-pointer hover:shadow-lg transition-all group mb-8">
                 
-                <div class="aspect-square bg-stone-50 overflow-hidden relative">
-                    <img :src="item.media_url" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                <div class="bg-stone-50 overflow-hidden relative">
+                    <img :src="item.media_url" class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
                     <div class="absolute inset-0 bg-stone-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
                         <span class="text-white text-xs font-bold tracking-widest uppercase bg-rose-800/90 px-3 py-1.5 rounded">View Full Image</span>
                     </div>
