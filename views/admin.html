@@ -499,8 +499,8 @@ body {
 .invoice-form-section { margin-top: 24px; }
 .invoice-form-section h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
 .invoice-inputs { display: flex; flex-wrap: wrap; gap: 8px; }
-.invoice-inputs input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; outline: none; background: var(--cream); }
-.invoice-inputs input:focus { border-color: var(--gold); }
+.invoice-inputs input, .invoice-inputs select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; outline: none; background: var(--cream); }
+.invoice-inputs input:focus, .invoice-inputs select:focus { border-color: var(--gold); }
 @media print {
   body { background: #fff !important; }
   .sidebar, .topbar, .invoice-form-section, .btn { display: none !important; }
@@ -611,6 +611,55 @@ body {
   border-color: var(--gold);
 }
 
+/* ── GST Invoice ───────────────────────────────────────── */
+.gst-wrap { max-width: 900px; margin: 0 auto; }
+.gst-container {
+  width: 100%;
+  border: 2px solid var(--gold);
+  padding: 24px;
+  background: var(--surface);
+  border-radius: 8px;
+}
+.gst-topmeta { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 12px; }
+.gst-topmeta td { padding: 4px 6px; }
+.gst-topmeta td.gst-label { color: var(--muted); font-weight: 600; }
+.gst-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 16px; }
+.gst-party-box { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 12px; }
+.gst-party-box h4 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 8px; }
+.gst-party-box div { margin-bottom: 3px; line-height: 1.5; }
+.gst-items-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 4px; }
+.gst-items-table th, .gst-items-table td { border: 1px solid var(--gold); padding: 6px 8px; text-align: left; }
+.gst-items-table th { background: #e8e2d0; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+.gst-items-table td.num { text-align: right; }
+.gst-items-table .gst-del-cell { text-align: center; }
+.gst-totals-block { margin-top: 10px; display: flex; justify-content: flex-end; }
+.gst-totals-table { border-collapse: collapse; font-size: 13px; min-width: 280px; }
+.gst-totals-table td { padding: 5px 10px; }
+.gst-totals-table td.gst-tval { text-align: right; }
+.gst-totals-table tr.grand td { border-top: 2px solid var(--gold); font-weight: 700; font-size: 15px; padding-top: 8px; }
+.gst-words { margin-top: 14px; font-size: 12px; }
+.gst-words .gst-words-box { border: 1px dashed var(--border); border-radius: 6px; padding: 10px 12px; margin-top: 6px; min-height: 34px; font-style: italic; color: var(--ink); }
+.gst-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 20px; font-size: 11.5px; }
+.gst-bottom h4 { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.gst-bottom div.line { margin-bottom: 4px; line-height: 1.5; }
+.gst-signatory { text-align: center; padding-top: 34px; font-size: 12px; }
+.gst-signatory .sig-line { border-top: 1px solid var(--ink); margin-top: 6px; padding-top: 4px; }
+.gst-footer { border-top: 2px solid var(--gold); margin-top: 22px; padding-top: 12px; text-align: center; font-style: italic; color: var(--muted); font-size: 12px; }
+.gst-form-section { margin-top: 24px; }
+.gst-form-section h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+.gst-form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.gst-form-grid input, .gst-form-grid select { padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12.5px; font-family: inherit; outline: none; background: var(--cream); width: 100%; }
+.gst-form-grid input:focus, .gst-form-grid select:focus { border-color: var(--gold); }
+@media (max-width: 768px) {
+  .gst-parties { grid-template-columns: 1fr; }
+  .gst-bottom { grid-template-columns: 1fr; }
+  .gst-form-grid { grid-template-columns: 1fr 1fr; }
+}
+@media print {
+  .gst-form-section { display: none !important; }
+  .gst-container { border: none; }
+}
+
 @media (max-width: 768px) {
   .sidebar { width: 64px; }
   .sidebar-brand img, .sidebar-brand p, .nav-item span, .logout-btn span { display: none; }
@@ -637,6 +686,9 @@ body {
     </div>
     <div class="nav-item" data-tab="invoice" onclick="switchTab('invoice',this)">
       <i class="fa-solid fa-file-invoice"></i><span>Invoice</span>
+    </div>
+    <div class="nav-item" data-tab="gst-invoice" onclick="switchTab('gst-invoice',this)">
+      <i class="fa-solid fa-receipt"></i><span>GST Invoice</span>
     </div>
   </nav>
   <div class="sidebar-footer">
@@ -705,6 +757,7 @@ body {
     </div>
 
     <!-- ════════ INVOICE TAB ════════ -->
+    <div class="tab-panel" id="tab-invoice">
     <div class="invoice-wrap">
   <div id="invoice" class="invoice-container">
     <div class="invoice-header">
@@ -726,10 +779,8 @@ body {
       <tr><th>Description</th><th>Qty</th><th>Unit Price (₹)</th><th>Total (₹)</th></tr>
     </table>
 
-    <!-- Totals block now shows Subtotal, GST, Grand Total -->
+    <!-- Totals block shows Grand Total only (no GST) -->
     <div class="invoice-totals" id="inv-totals">
-      <div>Subtotal: ₹ <span id="inv-subtotal">0.00</span></div>
-      <div>GST (5%): ₹ <span id="inv-gst">0.00</span></div>
       <strong>Grand Total: ₹ <span id="inv-grandtotal">0.00</span></strong>
     </div>
 
@@ -775,6 +826,184 @@ body {
     <button class="btn btn-ghost" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
   </div>
 </div>
+    </div>
+
+    <!-- ════════ GST INVOICE TAB ════════ -->
+    <div class="tab-panel" id="tab-gst-invoice">
+    <div class="gst-wrap">
+      <div id="gst-invoice" class="gst-container">
+
+        <div class="invoice-header">
+          <img class="invoice-logo" src="/assets/logo.png" alt="Logo">
+          <div class="invoice-contact">
+            www.khyathiweaves.in<br>+91 9446994852
+          </div>
+        </div>
+        <div class="invoice-title" style="font-size:15px;letter-spacing:.05em;margin-bottom:4px">WEAVES OF PURE TRADITION</div>
+        <div class="invoice-title">GST TAX INVOICE</div>
+
+        <table class="gst-topmeta">
+          <tr>
+            <td class="gst-label">Invoice No.</td><td id="gst-inv-no-display">KW-25-26/0001</td>
+            <td class="gst-label">Place of Supply</td><td id="gst-pos-display">Kerala (32)</td>
+          </tr>
+          <tr>
+            <td class="gst-label">Invoice Date</td><td id="gst-date-display">—</td>
+            <td class="gst-label">Reverse Charge</td><td id="gst-rc-display">No</td>
+          </tr>
+        </table>
+
+        <div class="gst-parties">
+          <div class="gst-party-box">
+            <h4>Seller (Bill From)</h4>
+            <div id="gst-seller-name">Khyathi Weaves</div>
+            <div id="gst-seller-address">Kerala - India</div>
+            <div id="gst-seller-gstin">GSTIN: —</div>
+            <div id="gst-seller-email">khyathiweaves@gmail.com</div>
+          </div>
+          <div class="gst-party-box">
+            <h4>Bill To (Customer Details)</h4>
+            <div>Name: <span id="gst-buyer-name">—</span></div>
+            <div>Address: <span id="gst-buyer-address">—</span></div>
+            <div>GSTIN: <span id="gst-buyer-gstin">—</span></div>
+            <div>State: <span id="gst-buyer-state">—</span> &nbsp; PIN: <span id="gst-buyer-pin">—</span></div>
+            <div>Phone: <span id="gst-buyer-phone">—</span></div>
+            <div>Email: <span id="gst-buyer-email">—</span></div>
+          </div>
+        </div>
+
+        <table class="gst-items-table" id="gst-items-table">
+          <thead>
+            <tr>
+              <th>Sl.</th>
+              <th>Description of Goods</th>
+              <th>HSN/SAC</th>
+              <th>Qty</th>
+              <th>Unit</th>
+              <th>Rate (₹)</th>
+              <th>Discount (₹)</th>
+              <th>Taxable Value (₹)</th>
+              <th>GST %</th>
+              <th class="no-print-col"></th>
+            </tr>
+          </thead>
+          <tbody id="gst-items-body"></tbody>
+        </table>
+
+        <div class="gst-totals-block">
+          <table class="gst-totals-table">
+            <tr><td>Total Taxable Value</td><td class="gst-tval">₹ <span id="gst-total-taxable">0.00</span></td></tr>
+            <tr><td>CGST</td><td class="gst-tval">₹ <span id="gst-total-cgst">0.00</span></td></tr>
+            <tr><td>SGST</td><td class="gst-tval">₹ <span id="gst-total-sgst">0.00</span></td></tr>
+            <tr class="grand"><td>Grand Total</td><td class="gst-tval">₹ <span id="gst-grandtotal">0.00</span></td></tr>
+          </table>
+        </div>
+
+        <div class="gst-words">
+          <strong>Total Amount in Words:</strong>
+          <div class="gst-words-box" id="gst-amount-words">Zero Rupees Only</div>
+        </div>
+
+        <div class="gst-bottom">
+          <div>
+            <h4>Payment Details</h4>
+            <div class="line">UPI ID: <span id="gst-upi-display">—</span></div>
+            <div class="line">Bank Name: <span id="gst-bank-display">—</span></div>
+            <div class="line">A/C Name: <span id="gst-acname-display">KHYATHI WEAVES</span></div>
+            <div class="line">A/C No.: <span id="gst-acno-display">—</span></div>
+            <div class="line">IFSC: <span id="gst-ifsc-display">—</span></div>
+            <div class="line">Branch: <span id="gst-branch-display">—</span></div>
+          </div>
+          <div class="gst-signatory">
+            <h4>For Khyathi Weaves</h4>
+            <div class="sig-line">Authorised Signatory</div>
+          </div>
+          <div>
+            <h4>Terms &amp; Conditions</h4>
+            <div class="line">• Goods are subject to the applicable return/exchange policy.</div>
+            <div class="line">• Please retain this invoice for your records.</div>
+            <div class="line">• Warranty, if any, is as per manufacturer policy.</div>
+            <div class="line">• Verify HSN and GST rate before issuing the invoice.</div>
+            <div class="line">• Thank you for choosing Khyathi Weaves.</div>
+          </div>
+        </div>
+
+        <div class="gst-footer">✦ THANK YOU FOR YOUR TRUST AND SUPPORT ✦</div>
+      </div>
+
+      <!-- ── Editable form controls ── -->
+      <div class="gst-form-section">
+        <h3>Invoice Details</h3>
+        <div class="gst-form-grid">
+          <input type="text" id="gst-inv-no" placeholder="Invoice No. (e.g. KW-25-26/0001)">
+          <input type="date" id="gst-inv-date">
+          <input type="text" id="gst-pos" placeholder="Place of Supply (e.g. Kerala (32))">
+          <select id="gst-rc">
+            <option value="No">Reverse Charge: No</option>
+            <option value="Yes">Reverse Charge: Yes</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="updateGstMeta()">Update</button>
+      </div>
+
+      <div class="gst-form-section">
+        <h3>Seller Details (Bill From)</h3>
+        <div class="gst-form-grid">
+          <input type="text" id="gst-seller-name-in" placeholder="Business Name">
+          <input type="text" id="gst-seller-address-in" placeholder="Address">
+          <input type="text" id="gst-seller-gstin-in" placeholder="GSTIN">
+          <input type="text" id="gst-seller-email-in" placeholder="Email">
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="updateGstSeller()">Update</button>
+      </div>
+
+      <div class="gst-form-section">
+        <h3>Buyer Details (Bill To)</h3>
+        <div class="gst-form-grid">
+          <input type="text" id="gst-buyer-name-in" placeholder="Customer Name">
+          <input type="text" id="gst-buyer-address-in" placeholder="Address">
+          <input type="text" id="gst-buyer-gstin-in" placeholder="GSTIN (if any)">
+          <input type="text" id="gst-buyer-state-in" placeholder="State">
+          <input type="text" id="gst-buyer-pin-in" placeholder="PIN">
+          <input type="text" id="gst-buyer-phone-in" placeholder="Phone">
+          <input type="text" id="gst-buyer-email-in" placeholder="Email">
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="updateGstBuyer()">Update</button>
+      </div>
+
+      <div class="gst-form-section">
+        <h3>Add Item</h3>
+        <div class="gst-form-grid">
+          <input type="text" id="gst-item-desc" placeholder="Description of Goods">
+          <input type="text" id="gst-item-hsn" placeholder="HSN/SAC">
+          <input type="number" id="gst-item-qty" placeholder="Qty" min="0" step="0.01">
+          <input type="text" id="gst-item-unit" placeholder="Unit (e.g. Nos)" value="Nos">
+          <input type="number" id="gst-item-rate" placeholder="Rate (₹)" min="0" step="0.01">
+          <input type="number" id="gst-item-discount" placeholder="Discount (₹)" min="0" step="0.01" value="0">
+          <input type="number" id="gst-item-gstpct" placeholder="GST %" min="0" step="0.01" value="5">
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="addGstItem()"><i class="fa-solid fa-plus"></i> Add Item</button>
+      </div>
+
+      <div class="gst-form-section">
+        <h3>Payment Details</h3>
+        <div class="gst-form-grid">
+          <input type="text" id="gst-upi-in" placeholder="UPI ID">
+          <input type="text" id="gst-bank-in" placeholder="Bank Name">
+          <input type="text" id="gst-acname-in" placeholder="Account Name" value="KHYATHI WEAVES">
+          <input type="text" id="gst-acno-in" placeholder="Account Number">
+          <input type="text" id="gst-ifsc-in" placeholder="IFSC Code">
+          <input type="text" id="gst-branch-in" placeholder="Branch">
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="updateGstPayment()">Update</button>
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:10px">
+        <button class="btn btn-ghost" onclick="downloadGstPDF()"><i class="fa-solid fa-download"></i> Download PDF</button>
+        <button class="btn btn-ghost" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+      </div>
+    </div>
+    </div>
 
   </div><!-- /.content -->
 </div><!-- /.main -->
@@ -1007,7 +1236,7 @@ body {
 
 <script>
 // ── Tab switching ─────────────────────────────────────────────────────────────
-const tabTitles = { inventory:'Inventory Management', gallery:'Gallery Management', invoice:'Invoice Generator' };
+const tabTitles = { inventory:'Inventory Management', gallery:'Gallery Management', invoice:'Invoice Generator', 'gst-invoice':'GST Invoice Generator' };
 function switchTab(name, el) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1537,7 +1766,6 @@ function updateInvoiceDetails() {
   if (cust) document.getElementById('customerDisplay').textContent = cust;
 }
 
-const GST_RATE = 0.05; // fixed 5%
 let invItems = [];
 
 function addInvItem() {
@@ -1567,12 +1795,7 @@ function renderInvItems() {
     row.innerHTML = `<td>${item.desc}</td><td>${item.qty}</td><td>${item.price.toFixed(2)}</td><td>${lineTotal.toFixed(2)}</td>`;
   });
 
-  const gst = subtotal * GST_RATE;
-  const grandTotal = subtotal + gst;
-
-  document.getElementById('inv-subtotal').textContent = subtotal.toFixed(2);
-  document.getElementById('inv-gst').textContent = gst.toFixed(2);
-  document.getElementById('inv-grandtotal').textContent = grandTotal.toFixed(2);
+  document.getElementById('inv-grandtotal').textContent = subtotal.toFixed(2);
 }
 
 function updateComplimentaryMessage() {
@@ -1590,9 +1813,250 @@ function downloadPDF() {
   }).from(document.getElementById('invoice')).save();
 }
 
+// ════════════════════════════════════════════════════════════════════════════
+// GST INVOICE — fully editable, dynamic add/delete items, no IGST
+// ════════════════════════════════════════════════════════════════════════════
+
+let gstItems = [
+  { desc: 'Pure Kanchi Cotton Saree (with Blouse Piece)', hsn: '5208', qty: 1, unit: 'Nos', rate: 1800, discount: 0, gstpct: 5 }
+];
+
+let gstMeta = {
+  invoiceNo: 'KW-25-26/0001',
+  invoiceDate: '',
+  placeOfSupply: 'Kerala (32)',
+  reverseCharge: 'No'
+};
+
+let gstSeller = {
+  name: 'Khyathi Weaves',
+  address: 'Kerala - India',
+  gstin: '',
+  email: 'khyathiweaves@gmail.com'
+};
+
+let gstBuyer = {
+  name: '', address: '', gstin: '', state: '', pin: '', phone: '', email: ''
+};
+
+let gstPayment = {
+  upi: '', bank: '', acname: 'KHYATHI WEAVES', acno: '', ifsc: '', branch: ''
+};
+
+document.getElementById('gst-date-display').textContent = new Date().toLocaleDateString('en-IN');
+
+function gstCalcRow(item) {
+  const taxable = Math.max((item.qty || 0) * (item.rate || 0) - (item.discount || 0), 0);
+  const tax = taxable * ((item.gstpct || 0) / 100);
+  const cgst = tax / 2;
+  const sgst = tax / 2;
+  return { taxable, cgst, sgst };
+}
+
+function renderGstInvoice() {
+  // Meta
+  document.getElementById('gst-inv-no-display').textContent = gstMeta.invoiceNo || '—';
+  document.getElementById('gst-date-display').textContent = gstMeta.invoiceDate
+    ? new Date(gstMeta.invoiceDate).toLocaleDateString('en-IN')
+    : new Date().toLocaleDateString('en-IN');
+  document.getElementById('gst-pos-display').textContent = gstMeta.placeOfSupply || '—';
+  document.getElementById('gst-rc-display').textContent = gstMeta.reverseCharge || 'No';
+
+  // Seller
+  document.getElementById('gst-seller-name').textContent = gstSeller.name || 'Khyathi Weaves';
+  document.getElementById('gst-seller-address').textContent = gstSeller.address || '—';
+  document.getElementById('gst-seller-gstin').textContent = 'GSTIN: ' + (gstSeller.gstin || '—');
+  document.getElementById('gst-seller-email').textContent = gstSeller.email || '—';
+
+  // Buyer
+  document.getElementById('gst-buyer-name').textContent = gstBuyer.name || '—';
+  document.getElementById('gst-buyer-address').textContent = gstBuyer.address || '—';
+  document.getElementById('gst-buyer-gstin').textContent = gstBuyer.gstin || '—';
+  document.getElementById('gst-buyer-state').textContent = gstBuyer.state || '—';
+  document.getElementById('gst-buyer-pin').textContent = gstBuyer.pin || '—';
+  document.getElementById('gst-buyer-phone').textContent = gstBuyer.phone || '—';
+  document.getElementById('gst-buyer-email').textContent = gstBuyer.email || '—';
+
+  // Payment
+  document.getElementById('gst-upi-display').textContent = gstPayment.upi || '—';
+  document.getElementById('gst-bank-display').textContent = gstPayment.bank || '—';
+  document.getElementById('gst-acname-display').textContent = gstPayment.acname || 'KHYATHI WEAVES';
+  document.getElementById('gst-acno-display').textContent = gstPayment.acno || '—';
+  document.getElementById('gst-ifsc-display').textContent = gstPayment.ifsc || '—';
+  document.getElementById('gst-branch-display').textContent = gstPayment.branch || '—';
+
+  // Items
+  const body = document.getElementById('gst-items-body');
+  if (!gstItems.length) {
+    body.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--muted);border:1px solid var(--gold)">No items added yet.</td></tr>`;
+  } else {
+    body.innerHTML = gstItems.map((item, idx) => {
+      const { taxable } = gstCalcRow(item);
+      return `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${item.desc || '—'}</td>
+          <td>${item.hsn || '—'}</td>
+          <td class="num">${item.qty || 0}</td>
+          <td>${item.unit || 'Nos'}</td>
+          <td class="num">${(item.rate || 0).toFixed(2)}</td>
+          <td class="num">${(item.discount || 0).toFixed(2)}</td>
+          <td class="num">${taxable.toFixed(2)}</td>
+          <td class="num">${item.gstpct || 0}%</td>
+          <td class="gst-del-cell"><button class="btn btn-danger btn-sm" onclick="deleteGstItem(${idx})" title="Delete item"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Totals — CGST + SGST only, IGST removed entirely
+  let totalTaxable = 0, totalCgst = 0, totalSgst = 0;
+  gstItems.forEach(item => {
+    const { taxable, cgst, sgst } = gstCalcRow(item);
+    totalTaxable += taxable;
+    totalCgst += cgst;
+    totalSgst += sgst;
+  });
+  const grandTotal = totalTaxable + totalCgst + totalSgst;
+
+  document.getElementById('gst-total-taxable').textContent = totalTaxable.toFixed(2);
+  document.getElementById('gst-total-cgst').textContent = totalCgst.toFixed(2);
+  document.getElementById('gst-total-sgst').textContent = totalSgst.toFixed(2);
+  document.getElementById('gst-grandtotal').textContent = grandTotal.toFixed(2);
+
+  document.getElementById('gst-amount-words').textContent = numberToWordsINR(grandTotal);
+}
+
+function addGstItem() {
+  const desc = document.getElementById('gst-item-desc').value.trim();
+  const hsn = document.getElementById('gst-item-hsn').value.trim();
+  const qty = parseFloat(document.getElementById('gst-item-qty').value) || 0;
+  const unit = document.getElementById('gst-item-unit').value.trim() || 'Nos';
+  const rate = parseFloat(document.getElementById('gst-item-rate').value) || 0;
+  const discount = parseFloat(document.getElementById('gst-item-discount').value) || 0;
+  const gstpct = parseFloat(document.getElementById('gst-item-gstpct').value) || 0;
+
+  if (!desc || qty <= 0 || rate <= 0) {
+    toast('Enter description, qty and rate', 'error');
+    return;
+  }
+
+  gstItems.push({ desc, hsn, qty, unit, rate, discount, gstpct });
+  renderGstInvoice();
+
+  document.getElementById('gst-item-desc').value = '';
+  document.getElementById('gst-item-hsn').value = '';
+  document.getElementById('gst-item-qty').value = '';
+  document.getElementById('gst-item-unit').value = 'Nos';
+  document.getElementById('gst-item-rate').value = '';
+  document.getElementById('gst-item-discount').value = '0';
+  document.getElementById('gst-item-gstpct').value = '5';
+  toast('Item added to GST invoice');
+}
+
+function deleteGstItem(idx) {
+  gstItems.splice(idx, 1);
+  renderGstInvoice();
+  toast('Item removed', 'error');
+}
+
+function updateGstMeta() {
+  const no = document.getElementById('gst-inv-no').value;
+  const date = document.getElementById('gst-inv-date').value;
+  const pos = document.getElementById('gst-pos').value;
+  const rc = document.getElementById('gst-rc').value;
+  if (no) gstMeta.invoiceNo = no;
+  if (date) gstMeta.invoiceDate = date;
+  if (pos) gstMeta.placeOfSupply = pos;
+  gstMeta.reverseCharge = rc;
+  renderGstInvoice();
+}
+
+function updateGstSeller() {
+  const name = document.getElementById('gst-seller-name-in').value;
+  const address = document.getElementById('gst-seller-address-in').value;
+  const gstin = document.getElementById('gst-seller-gstin-in').value;
+  const email = document.getElementById('gst-seller-email-in').value;
+  if (name) gstSeller.name = name;
+  if (address) gstSeller.address = address;
+  gstSeller.gstin = gstin;
+  if (email) gstSeller.email = email;
+  renderGstInvoice();
+}
+
+function updateGstBuyer() {
+  gstBuyer.name = document.getElementById('gst-buyer-name-in').value;
+  gstBuyer.address = document.getElementById('gst-buyer-address-in').value;
+  gstBuyer.gstin = document.getElementById('gst-buyer-gstin-in').value;
+  gstBuyer.state = document.getElementById('gst-buyer-state-in').value;
+  gstBuyer.pin = document.getElementById('gst-buyer-pin-in').value;
+  gstBuyer.phone = document.getElementById('gst-buyer-phone-in').value;
+  gstBuyer.email = document.getElementById('gst-buyer-email-in').value;
+  renderGstInvoice();
+}
+
+function updateGstPayment() {
+  gstPayment.upi = document.getElementById('gst-upi-in').value;
+  gstPayment.bank = document.getElementById('gst-bank-in').value;
+  gstPayment.acname = document.getElementById('gst-acname-in').value || 'KHYATHI WEAVES';
+  gstPayment.acno = document.getElementById('gst-acno-in').value;
+  gstPayment.ifsc = document.getElementById('gst-ifsc-in').value;
+  gstPayment.branch = document.getElementById('gst-branch-in').value;
+  renderGstInvoice();
+}
+
+function downloadGstPDF() {
+  html2pdf().set({
+    margin: 8,
+    filename: 'Khyathi_Weaves_GST_Invoice.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 1.5, useCORS: true, scrollX: 0, scrollY: 0 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).from(document.getElementById('gst-invoice')).save();
+}
+
+// ── Number to words (Indian numbering system, Rupees & Paise) ────────────────
+function numberToWordsINR(amount) {
+  amount = Math.round((amount || 0) * 100) / 100;
+  const rupees = Math.floor(amount);
+  const paise = Math.round((amount - rupees) * 100);
+
+  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+    'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+  function twoDigits(n) {
+    if (n < 20) return ones[n];
+    return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+  }
+  function threeDigits(n) {
+    if (n >= 100) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + twoDigits(n % 100) : '');
+    return twoDigits(n);
+  }
+  function convert(n) {
+    if (n === 0) return 'Zero';
+    let parts = [];
+    const crore = Math.floor(n / 10000000); n %= 10000000;
+    const lakh = Math.floor(n / 100000); n %= 100000;
+    const thousand = Math.floor(n / 1000); n %= 1000;
+    const hundred = n;
+    if (crore) parts.push(threeDigits(crore) + ' Crore');
+    if (lakh) parts.push(threeDigits(lakh) + ' Lakh');
+    if (thousand) parts.push(threeDigits(thousand) + ' Thousand');
+    if (hundred) parts.push(threeDigits(hundred));
+    return parts.join(' ');
+  }
+
+  let words = convert(rupees) + ' Rupees';
+  if (paise > 0) words += ' and ' + convert(paise) + ' Paise';
+  words += ' Only';
+  return words;
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 loadInventory();
 loadGallery();
+renderGstInvoice();
 </script>
 </body>
 </html>
