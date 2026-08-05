@@ -1,20 +1,50 @@
 <section class="max-w-7xl mx-auto px-6 py-12" 
-          x-data="{ modal: false, products: [], activeItem: null, images: [], activeImg: '', getOptimizedUrl(url, w=400) { if(!url) return ''; return url.includes('/storage/v1/object/public/') ? url.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/') + '?width=' + w : url; } }" 
+          x-data="{ 
+              modal: false, products: [], activeItem: null, images: [], activeImg: '', 
+              activeCategory: 'All',
+              categories: ['All', 'Kanchi Cotton', 'Chettinad Cotton', 'Onam Collection', 'Kuthambully Cotton'],
+              get filteredProducts() {
+                  return this.activeCategory === 'All' 
+                      ? this.products 
+                      : this.products.filter(p => p.category === this.activeCategory);
+              },
+              getOptimizedUrl(url, w=400) { if(!url) return ''; return url.includes('/storage/v1/object/public/') ? url.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/') + '?width=' + w : url; } 
+          }" 
           x-init="fetch('/api/products').then(r=>r.json()).then(d=>{ products=d; console.log('Sarees loaded:', d); })">
     
-    <div class="text-center mb-16">
+    <div class="text-center mb-10">
         <h2 class="text-4xl font-serif font-bold text-stone-900 uppercase tracking-widest">Our Collection</h2>
         <div class="w-16 h-1 bg-rose-800 mx-auto mt-4"></div>
     </div>
 
+    <!-- Category tabs -->
+    <div class="flex flex-wrap justify-center gap-3 mb-14">
+        <template x-for="cat in categories" :key="cat">
+            <button @click="activeCategory = cat"
+                    class="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all border"
+                    :class="activeCategory === cat 
+                        ? 'bg-rose-800 text-white border-rose-800 shadow-sm' 
+                        : 'bg-white text-stone-500 border-stone-200 hover:border-rose-300 hover:text-rose-800'"
+                    x-text="cat">
+            </button>
+        </template>
+    </div>
+
+    <!-- Empty state -->
+    <template x-if="filteredProducts.length === 0">
+        <p class="text-center text-stone-400 italic py-16">No sarees in this collection yet.</p>
+    </template>
+
     <div class="grid md:grid-cols-3 gap-10">
-        <template x-for="p in products" :key="p.id">
+        <template x-for="p in filteredProducts" :key="p.id">
             <div @click="activeItem=p; fetch(`/api/products/${p.id}/images`).then(r=>r.json()).then(i=>{images=i; activeImg=i[0]; modal=true})" 
                  class="bg-white border border-stone-100 rounded-3xl overflow-hidden shadow-sm cursor-pointer hover:shadow-lg transition-all group relative">
                 
                 <div class="aspect-[3/4] overflow-hidden bg-stone-50 relative flex items-center justify-center">
                     <img :src="p.primary_image" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700" loading="lazy">
                     
+                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-stone-600 text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full z-10" x-text="p.category"></span>
+
                     <template x-if="p.is_sold === 1">
                         <div class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none select-none bg-white/40 backdrop-blur-[2px]">
                             <div class="border-[6px] border-rose-700/30 text-rose-700/40 px-6 py-2 font-serif font-black text-5xl uppercase transform -rotate-45 whitespace-nowrap">
@@ -75,7 +105,8 @@
 
             <div class="md:w-2/5 p-10 flex flex-col justify-between">
                 <div>
-                    <h2 class="text-3xl font-serif font-bold text-stone-900" x-text="activeItem?.name"></h2>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-rose-700" x-text="activeItem?.category"></span>
+                    <h2 class="text-3xl font-serif font-bold text-stone-900 mt-1" x-text="activeItem?.name"></h2>
                     
                     <div class="mt-6 p-4 bg-stone-50 rounded-xl border border-stone-100">
                         <p class="text-stone-400 line-through font-bold text-lg mb-1" x-text="activeItem?.mrp"></p>
@@ -114,11 +145,8 @@
 </section>
 
 <style>
- 
     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #e7e5e4; border-radius: 10px; }
-    
- 
     [x-cloak] { display: none !important; }
 </style>

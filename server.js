@@ -228,7 +228,7 @@ app.post('/api/products', requireAdminApi, upload.fields([
     { name: 'gallery_images', maxCount: 10 }
 ]), async (req, res) => {
     try {
-        const { name, mrp, price, primary_storage_url, gallery_storage_urls } = req.body;
+        const { name, mrp, price, category, primary_storage_url, gallery_storage_urls } = req.body;
         let primaryImageUrl = null;
 
         // Prefer uploaded file; fall back to storage-picked URL
@@ -241,7 +241,7 @@ app.post('/api/products', requireAdminApi, upload.fields([
 
         const { data: saree, error: insertErr } = await supabase
             .from('sarees')
-            .insert({ name, mrp, price, is_sold: false, primary_image: primaryImageUrl })
+            .insert({ name, mrp, price, category, is_sold: false, primary_image: primaryImageUrl })
             .select('id').single();
         if (insertErr) throw insertErr;
 
@@ -274,12 +274,11 @@ app.post('/api/products', requireAdminApi, upload.fields([
     }
 });
 
-
 // ── Edit saree details (text fields only; images via separate endpoint) ────────
 app.put('/api/products/:id', requireAdminApi, async (req, res) => {
-    const { name, mrp, price } = req.body;
+    const { name, mrp, price, category } = req.body;
     const { error } = await supabase
-        .from('sarees').update({ name, mrp, price }).eq('id', req.params.id);
+        .from('sarees').update({ name, mrp, price, category }).eq('id', req.params.id);
     if (error) return res.status(500).json({ success: false, error: error.message });
     res.json({ success: true });
 });

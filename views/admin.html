@@ -670,6 +670,7 @@ body {
               <tr>
                 <th>Image</th>
                 <th>Name</th>
+                <th>Category</th>
                 <th>MRP</th>
                 <th>Price</th>
                 <th>Status</th>
@@ -677,7 +678,7 @@ body {
               </tr>
             </thead>
             <tbody id="sarees-body">
-              <tr><td colspan="6" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></td></tr>
+              <tr><td colspan="7" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading...</p></td></tr>
             </tbody>
           </table>
         </div>
@@ -793,6 +794,15 @@ body {
           <label>Saree Name</label>
           <input type="text" class="form-control" name="name" required placeholder="e.g. Chettinad Cotton Saree (CC14)">
         </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select class="form-control" name="category" required>
+            <option value="Kanchi Cotton">Kanchi Cotton</option>
+            <option value="Chettinad Cotton">Chettinad Cotton</option>
+            <option value="Onam Collection">Onam Collection</option>
+            <option value="Kuthambully Cotton">Kuthambully Cotton</option>
+          </select>
+        </div>
         <div class="form-row">
           <div class="form-group">
             <label>MRP</label>
@@ -850,6 +860,15 @@ body {
       <div class="form-group">
         <label>Saree Name</label>
         <input type="text" class="form-control" id="edit-name" required>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select class="form-control" id="edit-category" required>
+          <option value="Kanchi Cotton">Kanchi Cotton</option>
+          <option value="Chettinad Cotton">Chettinad Cotton</option>
+          <option value="Onam Collection">Onam Collection</option>
+          <option value="Kuthambully Cotton">Kuthambully Cotton</option>
+        </select>
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -1164,7 +1183,7 @@ async function loadInventory() {
   document.getElementById('topbar-meta').textContent = `${sarees.length} items`;
 
   if (!sarees.length) {
-    body.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-box-open"></i><p>No sarees found. Add one!</p></div></td></tr>`;
+    body.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-box-open"></i><p>No sarees found. Add one!</p></div></td></tr>`;
     return;
   }
 
@@ -1172,6 +1191,7 @@ async function loadInventory() {
     <tr id="row-${s.id}">
       <td><img class="product-thumb" src="${s.primary_image || ''}" alt="${s.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2252%22><rect width=%2252%22 height=%2252%22 fill=%22%23e8dfc8%22/></svg>'"></td>
       <td><span style="font-weight:600">${s.name}</span></td>
+      <td><span class="badge" style="background:#f0e9d6;color:var(--gold-dark)">${s.category || '—'}</span></td>
       <td>${s.mrp || '—'}</td>
       <td>${s.price || '—'}</td>
       <td>
@@ -1184,7 +1204,7 @@ async function loadInventory() {
           <button class="btn btn-ghost btn-sm" onclick="toggleSold(${s.id})">
             <i class="fa-solid fa-toggle-on"></i> Toggle
           </button>
-          <button class="btn btn-ghost btn-sm" onclick="openEditSaree(${s.id},'${encodeURIComponent(s.name)}','${encodeURIComponent(s.mrp||'')}','${encodeURIComponent(s.price||'')}')">
+          <button class="btn btn-ghost btn-sm" onclick="openEditSaree(${s.id},'${encodeURIComponent(s.name)}','${encodeURIComponent(s.mrp||'')}','${encodeURIComponent(s.price||'')}','${encodeURIComponent(s.category||'')}')">
             <i class="fa-solid fa-pen"></i> Edit
           </button>
           <button class="btn btn-danger btn-sm" onclick="deleteSaree(${s.id}, '${encodeURIComponent(s.name)}')">
@@ -1291,11 +1311,12 @@ async function toggleSold(id) {
   }
 }
 
-async function openEditSaree(id, name, mrp, price) {
+async function openEditSaree(id, name, mrp, price, category) {
   document.getElementById('edit-saree-id').value = id;
   document.getElementById('edit-name').value = decodeURIComponent(name);
   document.getElementById('edit-mrp').value = decodeURIComponent(mrp);
   document.getElementById('edit-price').value = decodeURIComponent(price);
+  document.getElementById('edit-category').value = decodeURIComponent(category || '');
 
   // Fetch images WITH row IDs so delete buttons know which DB row to remove
   const res = await fetch(`/api/products/${id}/images?withIds=1`);
@@ -1333,7 +1354,8 @@ function pickEditGallery() {
       openEditSaree(id,
         encodeURIComponent(document.getElementById('edit-name').value),
         encodeURIComponent(document.getElementById('edit-mrp').value),
-        encodeURIComponent(document.getElementById('edit-price').value)
+        encodeURIComponent(document.getElementById('edit-price').value),
+        encodeURIComponent(document.getElementById('edit-category').value)
       );
     }
   });
@@ -1342,9 +1364,10 @@ function pickEditGallery() {
 async function updateSaree() {
   const id = document.getElementById('edit-saree-id').value;
   const body = new URLSearchParams({
-    name:  document.getElementById('edit-name').value,
-    mrp:   document.getElementById('edit-mrp').value,
-    price: document.getElementById('edit-price').value
+    name:     document.getElementById('edit-name').value,
+    mrp:      document.getElementById('edit-mrp').value,
+    price:    document.getElementById('edit-price').value,
+    category: document.getElementById('edit-category').value
   });
   const res = await fetch(`/api/products/${id}`, { method: 'PUT', body, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
   const json = await res.json();
@@ -1370,7 +1393,8 @@ async function uploadSareeImage() {
     openEditSaree(id,
       encodeURIComponent(document.getElementById('edit-name').value),
       encodeURIComponent(document.getElementById('edit-mrp').value),
-      encodeURIComponent(document.getElementById('edit-price').value)
+      encodeURIComponent(document.getElementById('edit-price').value),
+      encodeURIComponent(document.getElementById('edit-category').value)
     );
   } else {
     toast('Upload failed: ' + json.error, 'error');
@@ -1513,27 +1537,6 @@ function updateInvoiceDetails() {
   if (cust) document.getElementById('customerDisplay').textContent = cust;
 }
 
-function addInvItem() {
-  const desc  = document.getElementById('inv-desc').value;
-  const qty   = parseInt(document.getElementById('inv-qty').value);
-  const price = parseFloat(document.getElementById('inv-price').value);
-  if (!desc || !qty || !price) return;
-  const total = qty * price;
-  const table = document.getElementById('items-table');
-  const row = table.insertRow(-1);
-  row.innerHTML = `<td>${desc}</td><td>${qty}</td><td>${price.toFixed(2)}</td><td>${total.toFixed(2)}</td>`;
-  updateInvTotals();
-  ['inv-desc','inv-qty','inv-price'].forEach(id => document.getElementById(id).value = '');
-}
-
-function updateInvTotals() {
-  const table = document.getElementById('items-table');
-  let grand = 0;
-  for (let i = 1; i < table.rows.length; i++) {
-    grand += parseFloat(table.rows[i].cells[3].innerText || 0);
-  }
-  document.getElementById('inv-totals').innerHTML = `<strong>Grand Total: ₹ ${grand.toFixed(2)}</strong>`;
-}
 const GST_RATE = 0.05; // fixed 5%
 let invItems = [];
 
