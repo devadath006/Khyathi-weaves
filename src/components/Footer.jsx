@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 export default function Footer() {
   return (
     <>
@@ -26,6 +28,11 @@ export default function Footer() {
       <footer className="bg-stone-900 text-stone-400 py-12 flex flex-col items-center gap-2 text-sm">
         <span>Email: khyathiweaves@gmail.com</span>
         <span>WhatsApp: +91 94469 94852</span>
+        <Link
+          to="/admin"
+          aria-label="Admin"
+          className="mt-2 w-1.5 h-1.5 rounded-full bg-stone-800 hover:bg-stone-600 transition-colors"
+        />
       </footer>
     </>
   )
