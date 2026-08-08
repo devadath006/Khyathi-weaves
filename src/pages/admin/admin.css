@@ -1,0 +1,1044 @@
+/* Khyathi Weaves Admin — ported 1:1 from the original static admin panel design.
+   Everything is scoped under .kw-admin so it never leaks into the public storefront. */
+
+.kw-admin {
+  --gold: #c5a44a;
+  --gold-light: #e8d5a0;
+  --gold-dark: #9a7d35;
+  --cream: #fdfaf5;
+  --ink: #1a1208;
+  --muted: #6b6048;
+  --surface: #fffdf8;
+  --border: #e8dfc8;
+  --red: #c0392b;
+  --red-hover: #a93226;
+  --green: #27ae60;
+  --green-hover: #219a52;
+  --blue: #2980b9;
+  --sidebar-w: 240px;
+
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+}
+
+.kw-admin *,
+.kw-admin *::before,
+.kw-admin *::after {
+  box-sizing: border-box;
+}
+
+/* ── Sidebar ───────────────────────────────────────────── */
+.kw-admin .sidebar {
+  width: var(--sidebar-w);
+  background: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+}
+
+.kw-admin .sidebar-brand {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid rgba(197, 164, 74, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kw-admin .sidebar-brand img {
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+}
+
+.kw-admin .sidebar-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.kw-admin .sidebar-brand-text strong {
+  font-family: 'Playfair Display', serif;
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.kw-admin .sidebar-brand p {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--gold-light);
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+.kw-admin .sidebar-nav {
+  flex: 1;
+  padding: 16px 0;
+}
+
+.kw-admin .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+
+.kw-admin .nav-item:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.kw-admin .nav-item.active {
+  color: var(--gold);
+  background: rgba(197, 164, 74, 0.1);
+  border-left-color: var(--gold);
+}
+
+.kw-admin .nav-item i {
+  width: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.kw-admin .sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(197, 164, 74, 0.2);
+}
+
+.kw-admin .sidebar-email {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 0 4px 10px;
+  word-break: break-all;
+}
+
+.kw-admin .logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  text-decoration: none;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  padding: 6px 0;
+}
+.kw-admin .logout-btn:hover {
+  color: #fff;
+}
+
+/* ── Main ──────────────────────────────────────────────── */
+.kw-admin .main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.kw-admin .topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.kw-admin .topbar h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.kw-admin .topbar-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.kw-admin .content {
+  padding: 28px 32px;
+  flex: 1;
+}
+
+/* ── Buttons ───────────────────────────────────────────── */
+.kw-admin .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.kw-admin .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.kw-admin .btn-primary {
+  background: var(--gold);
+  color: var(--ink);
+}
+.kw-admin .btn-primary:hover:not(:disabled) {
+  background: var(--gold-dark);
+  color: #fff;
+}
+.kw-admin .btn-danger {
+  background: var(--red);
+  color: #fff;
+}
+.kw-admin .btn-danger:hover:not(:disabled) {
+  background: var(--red-hover);
+}
+.kw-admin .btn-success {
+  background: var(--green);
+  color: #fff;
+}
+.kw-admin .btn-success:hover:not(:disabled) {
+  background: var(--green-hover);
+}
+.kw-admin .btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.kw-admin .btn-ghost:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--gold-dark);
+}
+.kw-admin .btn-sm {
+  padding: 5px 10px;
+  font-size: 11px;
+  border-radius: 6px;
+}
+
+/* ── Panel card ────────────────────────────────────────── */
+.kw-admin .panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.kw-admin .panel-header {
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.kw-admin .panel-header h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.kw-admin .panel-body {
+  padding: 24px;
+}
+
+/* ── Table ─────────────────────────────────────────────── */
+.kw-admin .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.kw-admin .data-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+}
+
+.kw-admin .data-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.kw-admin .data-table tr:last-child td {
+  border-bottom: none;
+}
+.kw-admin .data-table tr:hover td {
+  background: rgba(197, 164, 74, 0.04);
+}
+
+.kw-admin .product-thumb {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--cream);
+}
+
+.kw-admin .badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.kw-admin .badge-sold {
+  background: #fde8e8;
+  color: var(--red);
+}
+.kw-admin .badge-avail {
+  background: #e8f8ef;
+  color: var(--green);
+}
+.kw-admin .badge-cat {
+  background: #f0e9d6;
+  color: var(--gold-dark);
+}
+
+.kw-admin .action-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ── Gallery grid ──────────────────────────────────────── */
+.kw-admin .gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.kw-admin .gallery-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface);
+  transition: box-shadow 0.2s;
+}
+.kw-admin .gallery-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+.kw-admin .gallery-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: var(--cream);
+}
+.kw-admin .gallery-card-body {
+  padding: 12px;
+}
+.kw-admin .gallery-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kw-admin .gallery-card-cat {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.kw-admin .gallery-card-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* ── Modal ─────────────────────────────────────────────── */
+.kw-admin .modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+.kw-admin .modal {
+  background: var(--surface);
+  border-radius: 16px;
+  width: 92%;
+  max-width: 540px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+  animation: kwModalIn 0.2s ease;
+}
+
+@keyframes kwModalIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.kw-admin .modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kw-admin .modal-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+}
+.kw-admin .modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.kw-admin .modal-close:hover {
+  background: var(--border);
+}
+.kw-admin .modal-body {
+  padding: 24px;
+}
+.kw-admin .modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ── Form ──────────────────────────────────────────────── */
+.kw-admin .form-group {
+  margin-bottom: 16px;
+}
+.kw-admin .form-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.kw-admin .form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  transition: border-color 0.2s;
+  outline: none;
+}
+.kw-admin .form-control:focus {
+  border-color: var(--gold);
+}
+.kw-admin .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.kw-admin .file-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px dashed var(--gold);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--gold-dark);
+  transition: background 0.2s;
+}
+.kw-admin .file-label:hover {
+  background: rgba(197, 164, 74, 0.06);
+}
+.kw-admin .file-label input {
+  display: none;
+}
+
+.kw-admin .preview-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.kw-admin .preview-strip img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+/* ── Loading / empty ───────────────────────────────────── */
+.kw-admin .spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: kwSpin 0.6s linear infinite;
+}
+@keyframes kwSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.kw-admin .empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--muted);
+}
+.kw-admin .empty-state i {
+  font-size: 36px;
+  margin-bottom: 12px;
+  opacity: 0.4;
+  display: block;
+}
+.kw-admin .empty-state p {
+  font-size: 14px;
+}
+
+/* ── Invoice ───────────────────────────────────────────── */
+.kw-admin .invoice-wrap {
+  max-width: 750px;
+  margin: 0 auto;
+}
+.kw-admin .invoice-container {
+  width: 100%;
+  border: 2px solid var(--gold);
+  padding: 24px;
+  background: var(--surface);
+  border-radius: 8px;
+}
+.kw-admin .invoice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.kw-admin .invoice-logo {
+  height: 60px;
+}
+.kw-admin .invoice-contact {
+  text-align: right;
+  font-size: 13px;
+  color: var(--muted);
+}
+.kw-admin .invoice-title {
+  text-align: center;
+  color: var(--gold-dark);
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+.kw-admin .invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.kw-admin .invoice-table th,
+.kw-admin .invoice-table td {
+  border: 1px solid var(--gold);
+  padding: 9px 12px;
+  text-align: left;
+  font-size: 13px;
+}
+.kw-admin .invoice-table th {
+  background: #e8e2d0;
+}
+.kw-admin .invoice-totals {
+  text-align: right;
+  margin-top: 16px;
+  font-size: 14px;
+}
+.kw-admin .invoice-complimentary {
+  text-align: center;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 10px;
+  min-height: 1em;
+}
+.kw-admin .invoice-footer {
+  border-top: 2px solid var(--gold);
+  margin-top: 24px;
+  padding-top: 12px;
+  text-align: center;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 12px;
+}
+.kw-admin .invoice-form-section {
+  margin-top: 24px;
+}
+.kw-admin .invoice-form-section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.kw-admin .invoice-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.kw-admin .invoice-inputs input,
+.kw-admin .invoice-inputs select {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  background: var(--cream);
+}
+.kw-admin .invoice-inputs input:focus,
+.kw-admin .invoice-inputs select:focus {
+  border-color: var(--gold);
+}
+
+/* ── Image management strip ────────────────────────────── */
+.kw-admin .img-manage-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.kw-admin .img-thumb-wrap {
+  position: relative;
+  display: inline-block;
+}
+.kw-admin .img-thumb-wrap img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.kw-admin .img-del-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Image Picker Modal ────────────────────────────────── */
+.kw-admin .picker-modal {
+  width: 96%;
+  max-width: 860px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+.kw-admin .picker-search {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  outline: none;
+  margin-bottom: 16px;
+}
+.kw-admin .picker-search:focus {
+  border-color: var(--gold);
+}
+.kw-admin .picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+}
+.kw-admin .picker-item {
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  background: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+.kw-admin .picker-item:hover {
+  border-color: var(--gold);
+  transform: scale(1.03);
+}
+.kw-admin .picker-item.selected {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(197, 164, 74, 0.35);
+}
+.kw-admin .picker-item img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.kw-admin .picker-item .picker-check {
+  display: none;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--gold);
+  color: var(--ink);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+}
+.kw-admin .picker-item.selected .picker-check {
+  display: flex;
+}
+.kw-admin .picker-item .picker-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 9px;
+  padding: 3px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kw-admin .picker-mode-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.kw-admin .picker-mode-tab {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.kw-admin .picker-mode-tab.active {
+  background: var(--gold);
+  color: var(--ink);
+  border-color: var(--gold);
+}
+
+/* ── GST Invoice ───────────────────────────────────────── */
+.kw-admin .gst-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.kw-admin .gst-container {
+  width: 100%;
+  border: 2px solid var(--gold);
+  padding: 24px;
+  background: var(--surface);
+  border-radius: 8px;
+}
+.kw-admin .gst-topmeta {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+  font-size: 12px;
+}
+.kw-admin .gst-topmeta td {
+  padding: 4px 6px;
+}
+.kw-admin .gst-topmeta td.gst-label {
+  color: var(--muted);
+  font-weight: 600;
+}
+.kw-admin .gst-parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+.kw-admin .gst-party-box {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 12px;
+}
+.kw-admin .gst-party-box h4 {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 8px;
+}
+.kw-admin .gst-party-box div {
+  margin-bottom: 3px;
+  line-height: 1.5;
+}
+.kw-admin .gst-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  margin-bottom: 4px;
+}
+.kw-admin .gst-items-table th,
+.kw-admin .gst-items-table td {
+  border: 1px solid var(--gold);
+  padding: 6px 8px;
+  text-align: left;
+}
+.kw-admin .gst-items-table th {
+  background: #e8e2d0;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.kw-admin .gst-items-table td.num {
+  text-align: right;
+}
+.kw-admin .gst-items-table .gst-del-cell {
+  text-align: center;
+}
+.kw-admin .gst-totals-block {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+.kw-admin .gst-totals-table {
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 280px;
+}
+.kw-admin .gst-totals-table td {
+  padding: 5px 10px;
+}
+.kw-admin .gst-totals-table td.gst-tval {
+  text-align: right;
+}
+.kw-admin .gst-totals-table tr.grand td {
+  border-top: 2px solid var(--gold);
+  font-weight: 700;
+  font-size: 15px;
+  padding-top: 8px;
+}
+.kw-admin .gst-words {
+  margin-top: 14px;
+  font-size: 12px;
+}
+.kw-admin .gst-words .gst-words-box {
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-top: 6px;
+  min-height: 34px;
+  font-style: italic;
+  color: var(--ink);
+}
+.kw-admin .gst-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+  font-size: 11.5px;
+}
+.kw-admin .gst-bottom h4 {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.kw-admin .gst-bottom div.line {
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+.kw-admin .gst-signatory {
+  text-align: center;
+  padding-top: 34px;
+  font-size: 12px;
+}
+.kw-admin .gst-signatory .sig-line {
+  border-top: 1px solid var(--ink);
+  margin-top: 6px;
+  padding-top: 4px;
+}
+.kw-admin .gst-footer {
+  border-top: 2px solid var(--gold);
+  margin-top: 22px;
+  padding-top: 12px;
+  text-align: center;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 12px;
+}
+.kw-admin .gst-form-section {
+  margin-top: 24px;
+}
+.kw-admin .gst-form-section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.kw-admin .gst-form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.kw-admin .gst-form-grid input,
+.kw-admin .gst-form-grid select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-family: inherit;
+  outline: none;
+  background: var(--cream);
+  width: 100%;
+}
+.kw-admin .gst-form-grid input:focus,
+.kw-admin .gst-form-grid select:focus {
+  border-color: var(--gold);
+}
+
+@media (max-width: 768px) {
+  .kw-admin .gst-parties {
+    grid-template-columns: 1fr;
+  }
+  .kw-admin .gst-bottom {
+    grid-template-columns: 1fr;
+  }
+  .kw-admin .gst-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .kw-admin .sidebar {
+    width: 64px;
+  }
+  .kw-admin .sidebar-brand-text,
+  .kw-admin .nav-item span,
+  .kw-admin .logout-btn span,
+  .kw-admin .sidebar-email {
+    display: none;
+  }
+  .kw-admin .main {
+    margin-left: 64px;
+  }
+  .kw-admin .content {
+    padding: 16px;
+  }
+  .kw-admin .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  body.kw-printing-invoice * {
+    visibility: hidden;
+  }
+  body.kw-printing-invoice #kw-print-invoice,
+  body.kw-printing-invoice #kw-print-invoice * {
+    visibility: visible;
+  }
+  body.kw-printing-invoice #kw-print-invoice {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  body.kw-printing-gst * {
+    visibility: hidden;
+  }
+  body.kw-printing-gst #kw-print-gst,
+  body.kw-printing-gst #kw-print-gst * {
+    visibility: visible;
+  }
+  body.kw-printing-gst #kw-print-gst {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
