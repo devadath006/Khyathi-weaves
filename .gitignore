@@ -1,3 +1,4 @@
 node_modules
-data/*.sqlite
+dist
 .env
+.DS_Store
